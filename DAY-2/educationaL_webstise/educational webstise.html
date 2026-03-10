@@ -1,0 +1,1997 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA Academy - Master Data Structures &amp; Algorithms</title>
+  <!-- Removed root-relative SDK: was <script src="/_sdk/element_sdk.js"></script> -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body, #app-wrapper {
+      height: 100%;
+      width: 100%;
+    }
+
+    #app-wrapper {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Gradient backgrounds */
+    .gradient-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gradient-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 25s linear infinite;
+    }
+
+    @keyframes moveGrid {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(40px, 40px); }
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Navigation */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 70px;
+      height: calc(100% - 70px);
+      width: 280px;
+      background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+      color: white;
+      overflow-y: auto;
+      z-index: 900;
+      transition: transform 0.3s ease;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-hidden {
+      transform: translateX(-280px);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .nav-category {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #a0aec0;
+      padding: 16px 20px 8px;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-left-color: #667eea;
+    }
+
+    .nav-item.active {
+      background: rgba(102, 126, 234, 0.2);
+      border-left-color: #667eea;
+      font-weight: 600;
+    }
+
+    .main-content {
+      margin-left: 280px;
+      margin-top: 70px;
+      transition: margin-left 0.3s ease;
+      min-height: calc(100% - 70px);
+    }
+
+    .main-content.expanded {
+      margin-left: 0;
+    }
+
+    /* Code blocks */
+    .code-block {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 16px 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .code-block::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .code-block::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .code-block::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .code-language {
+      color: #a0aec0;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .copy-btn.copied {
+      background: #48bb78;
+    }
+
+    /* Syntax highlighting */
+    .keyword { color: #f687b3; }
+    .string { color: #9ae6b4; }
+    .comment { color: #718096; font-style: italic; }
+    .function { color: #90cdf4; }
+    .number { color: #fbd38d; }
+
+    /* Complexity badges */
+    .complexity-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 4px;
+    }
+
+    .complexity-excellent {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .complexity-good {
+      background: #bee3f8;
+      color: #2c5282;
+    }
+
+    .complexity-medium {
+      background: #fef5e7;
+      color: #975a16;
+    }
+
+    .complexity-bad {
+      background: #fed7d7;
+      color: #c53030;
+    }
+
+    /* Content sections */
+    .content-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 20px;
+      font-weight: 600;
+      color: #4a5568;
+      margin: 24px 0 12px;
+    }
+
+    /* Tables */
+    .complexity-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .complexity-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .complexity-table th,
+    .complexity-table td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .complexity-table th {
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .complexity-table tbody tr:hover {
+      background: #f7fafc;
+    }
+
+    .complexity-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Lists */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 12px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-icon {
+      color: #667eea;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* AI Chat Widget */
+    .chat-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+    }
+
+    .chat-button {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .chat-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+    }
+
+    .chat-button::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      animation: pulse 2s infinite;
+      z-index: -1;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    .chat-window {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 420px;
+      height: 600px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+
+    .chat-window.active {
+      display: flex;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header-title {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .chat-header-subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    .chat-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .chat-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f7fafc;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #e2e8f0;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 3px;
+    }
+
+    .chat-message {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 85%;
+      animation: messageSlide 0.3s ease;
+      line-height: 1.5;
+    }
+
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-message.bot {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-message.user {
+      background: #e2e8f0;
+      color: #2d3748;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-area {
+      padding: 20px;
+      border-top: 1px solid #e2e8f0;
+      background: white;
+    }
+
+    .chat-suggestions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .suggestion-chip {
+      background: #edf2f7;
+      color: #4a5568;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .suggestion-chip:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .chat-input:focus {
+      border-color: #667eea;
+    }
+
+    .chat-send {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .chat-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Search */
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 1000;
+    }
+
+    .search-results.active {
+      display: block;
+    }
+
+    .search-result-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f7fafc;
+      transition: all 0.2s ease;
+    }
+
+    .search-result-item:hover {
+      background: #f7fafc;
+    }
+
+    .search-result-title {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+
+    .search-result-snippet {
+      font-size: 13px;
+      color: #718096;
+    }
+
+    /* Visual diagrams */
+    .diagram-container {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 32px;
+      margin: 24px 0;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Topic cards */
+    .topic-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .topic-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* Practice problems */
+    .problem-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .problem-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.1);
+    }
+
+    .difficulty-easy {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .difficulty-medium {
+      background: #fef5e7;
+      color: #975a16;
+    }
+
+    .difficulty-hard {
+      background: #fed7d7;
+      color: #c53030;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-280px);
+      }
+      
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .chat-window {
+        width: calc(100vw - 48px);
+        height: calc(100vh - 120px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-section {
+        padding: 20px;
+      }
+      
+      .section-title {
+        font-size: 24px;
+      }
+      
+      .code-block {
+        padding: 16px;
+        font-size: 12px;
+      }
+      
+      .navbar {
+        padding: 12px 16px;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb-separator {
+      color: #cbd5e0;
+    }
+
+    .breadcrumb-current {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    /* Demo badge */
+    .demo-badge {
+      background: rgba(254, 215, 215, 0.5);
+      color: #c53030;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Visualization controls */
+    .viz-controls {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .viz-button {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .viz-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .viz-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <!-- Removed root-relative SDK: was <script src="/_sdk/data_sdk.js" type="text/javascript"></script> -->
+ </head>
+ <body class="h-full">
+  <div id="app-wrapper"><!-- Navbar -->
+   <nav class="navbar" id="navbar">
+    <div class="flex items-center justify-between" style="padding: 12px 24px;">
+     <div class="flex items-center gap-4"><button id="menuToggle" class="text-2xl text-gray-700">☰</button>
+      <h1 class="text-xl font-bold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="platformName">DSA Academy</h1>
+     </div>
+     <div class="search-container hidden md:block"><span class="search-icon">🔍</span> <input type="text" class="search-input" placeholder="Search topics, algorithms..." id="searchInput">
+      <div class="search-results" id="searchResults"></div>
+     </div>
+     <div class="flex items-center gap-3"><button class="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 transition" onclick="toggleTheme()">🌙 Dark</button>
+     </div>
+    </div>
+   </nav><!-- Sidebar Navigation -->
+   <aside class="sidebar" id="sidebar">
+    <div class="nav-category">
+     📚 Fundamentals
+    </div>
+    <div class="nav-item active" data-page="home"><span>🏠</span> Home
+    </div>
+    <div class="nav-item" data-page="introduction"><span>📖</span> Introduction to DSA
+    </div>
+    <div class="nav-item" data-page="complexity"><span>⏱️</span> Time &amp; Space Complexity
+    </div>
+    <div class="nav-category">
+     🗃️ Linear Data Structures
+    </div>
+    <div class="nav-item" data-page="arrays"><span>📊</span> Arrays
+    </div>
+    <div class="nav-item" data-page="linked-lists"><span>🔗</span> Linked Lists
+    </div>
+    <div class="nav-item" data-page="stacks"><span>📚</span> Stacks
+    </div>
+    <div class="nav-item" data-page="queues"><span>🎫</span> Queues
+    </div>
+    <div class="nav-category">
+     🌳 Non-Linear Structures
+    </div>
+    <div class="nav-item" data-page="trees"><span>🌲</span> Trees &amp; BST
+    </div>
+    <div class="nav-item" data-page="heaps"><span>⛰️</span> Heaps
+    </div>
+    <div class="nav-item" data-page="graphs"><span>🕸️</span> Graphs
+    </div>
+    <div class="nav-item" data-page="hashing"><span>#️⃣</span> Hashing
+    </div>
+    <div class="nav-category">
+     🔄 Algorithms
+    </div>
+    <div class="nav-item" data-page="recursion"><span>🔄</span> Recursion
+    </div>
+    <div class="nav-item" data-page="sorting"><span>📶</span> Sorting Algorithms
+    </div>
+    <div class="nav-item" data-page="searching"><span>🔍</span> Searching Algorithms
+    </div>
+    <div class="nav-item" data-page="dynamic-programming"><span>💎</span> Dynamic Programming
+    </div>
+    <div class="nav-item" data-page="greedy"><span>🎯</span> Greedy Algorithms
+    </div>
+    <div class="nav-category">
+     🎓 Practice &amp; Resources
+    </div>
+    <div class="nav-item" data-page="practice"><span>💪</span> Practice Problems
+    </div>
+    <div class="nav-item" data-page="interview"><span>📝</span> Interview Questions
+    </div>
+    <div class="nav-item" data-page="mistakes"><span>⚠️</span> Common Mistakes
+    </div>
+    <div class="nav-item" data-page="resources"><span>📚</span> Learning Resources
+    </div>
+   </aside><!-- Main Content -->
+   <main class="main-content" id="mainContent"><!-- Home Page -->
+    <div id="homePage" class="page-content"><!-- Hero Section -->
+     <section class="gradient-hero text-white" style="padding: 140px 24px 100px; min-height: 600px; display: flex; align-items: center;">
+      <div class="max-w-6xl mx-auto text-center relative z-10 w-full fade-in">
+       <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight" id="heroTitle">Master Data Structures the Smart Way</h1>
+       <p class="text-xl md:text-2xl mb-10 opacity-95 max-w-3xl mx-auto leading-relaxed" id="heroSubtitle">Learn Arrays, Linked Lists, Stacks, Queues, Trees, Graphs &amp; Algorithms with AI Support</p>
+       <p class="text-lg mb-12 opacity-90 max-w-2xl mx-auto" id="tagline">Your Complete Guide to Mastering Data Structures &amp; Algorithms</p>
+       <div class="flex gap-4 justify-center flex-wrap"><button class="px-8 py-4 bg-white text-purple-600 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-lg" onclick="navigateToPage('introduction')"> 🚀 Start Learning </button> <button class="px-8 py-4 bg-transparent border-3 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-purple-600 transition" style="border-width: 3px;" onclick="openChat()"> 🤖 Ask AI Tutor <span class="demo-badge" style="background: rgba(255,255,255,0.3); color: white; margin-left: 8px;">DEMO</span> </button>
+       </div>
+      </div>
+     </section><!-- Quick Stats -->
+     <section style="padding: 60px 24px; background: linear-gradient(to bottom, #f7fafc, white);">
+      <div class="max-w-6xl mx-auto">
+       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center glass-card p-8">
+         <div class="text-4xl font-black mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          15+
+         </div>
+         <div class="text-gray-600 font-semibold">
+          Core Topics
+         </div>
+        </div>
+        <div class="text-center glass-card p-8">
+         <div class="text-4xl font-black mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          100+
+         </div>
+         <div class="text-gray-600 font-semibold">
+          Code Examples
+         </div>
+        </div>
+        <div class="text-center glass-card p-8">
+         <div class="text-4xl font-black mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          50+
+         </div>
+         <div class="text-gray-600 font-semibold">
+          Practice Problems
+         </div>
+        </div>
+        <div class="text-center glass-card p-8">
+         <div class="text-4xl font-black mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          24/7
+         </div>
+         <div class="text-gray-600 font-semibold">
+          AI Assistant
+         </div>
+        </div>
+       </div>
+      </div>
+     </section><!-- Featured Topics -->
+     <section style="padding: 60px 24px; background: white;">
+      <div class="max-w-6xl mx-auto">
+       <h2 class="text-4xl font-bold text-center mb-4 text-gray-800">Explore Core Topics</h2>
+       <p class="text-center text-gray-600 mb-12 text-lg">Comprehensive coverage of all essential data structures and algorithms</p>
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('arrays')"><span class="topic-icon">📊</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Arrays</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Contiguous memory, indexing, operations, and multi-dimensional arrays</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-excellent">Beginner</span> <span class="complexity-badge complexity-good">Essential</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('linked-lists')"><span class="topic-icon">🔗</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Linked Lists</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Singly, doubly, circular lists with dynamic memory allocation</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-medium">Intermediate</span> <span class="complexity-badge complexity-good">Important</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('stacks')"><span class="topic-icon">📚</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Stacks</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">LIFO principle, push/pop operations, and applications</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-excellent">Beginner</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('queues')"><span class="topic-icon">🎫</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Queues</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">FIFO, circular queues, priority queues, and deques</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-excellent">Beginner</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('trees')"><span class="topic-icon">🌲</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Trees &amp; BST</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Binary trees, BST, AVL, traversals, and operations</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-bad">Advanced</span> <span class="complexity-badge complexity-good">Critical</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('graphs')"><span class="topic-icon">🕸️</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Graphs</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">DFS, BFS, shortest paths, MST, and graph algorithms</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-bad">Advanced</span> <span class="complexity-badge complexity-good">Essential</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('sorting')"><span class="topic-icon">📶</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Sorting</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Bubble, merge, quick, heap sort with complexity analysis</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-medium">Intermediate</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('searching')"><span class="topic-icon">🔍</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Searching</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Linear, binary, interpolation, and exponential search</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-excellent">Beginner</span>
+         </div>
+        </div>
+        <div class="glass-card p-8 topic-card" onclick="navigateToPage('dynamic-programming')"><span class="topic-icon">💎</span>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Dynamic Programming</h3>
+         <p class="text-gray-600 mb-4 text-sm leading-relaxed">Memoization, tabulation, optimization problems</p>
+         <div class="flex gap-2 flex-wrap"><span class="complexity-badge complexity-bad">Advanced</span> <span class="complexity-badge complexity-good">Interview</span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section><!-- Learning Path -->
+     <section style="padding: 60px 24px; background: linear-gradient(to bottom, white, #f7fafc);">
+      <div class="max-w-6xl mx-auto">
+       <h2 class="text-4xl font-bold text-center mb-4 text-gray-800">Your Learning Path</h2>
+       <p class="text-center text-gray-600 mb-12 text-lg">Follow our structured curriculum from basics to advanced</p>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="content-section">
+         <h3 class="text-2xl font-bold mb-4 text-gray-800">🎯 For Beginners</h3>
+         <ul class="feature-list text-gray-700">
+          <li><span class="feature-icon">✓</span> <span>Start with <strong>Arrays</strong> and understand indexing</span></li>
+          <li><span class="feature-icon">✓</span> <span>Learn <strong>Time &amp; Space Complexity</strong> basics</span></li>
+          <li><span class="feature-icon">✓</span> <span>Master <strong>Stacks and Queues</strong> concepts</span></li>
+          <li><span class="feature-icon">✓</span> <span>Practice <strong>Searching Algorithms</strong></span></li>
+          <li><span class="feature-icon">✓</span> <span>Solve beginner-level problems daily</span></li>
+         </ul>
+        </div>
+        <div class="content-section">
+         <h3 class="text-2xl font-bold mb-4 text-gray-800">🚀 For Advanced Learners</h3>
+         <ul class="feature-list text-gray-700">
+          <li><span class="feature-icon">✓</span> <span>Deep dive into <strong>Trees and Graphs</strong></span></li>
+          <li><span class="feature-icon">✓</span> <span>Master <strong>Dynamic Programming</strong> patterns</span></li>
+          <li><span class="feature-icon">✓</span> <span>Study <strong>Advanced Algorithms</strong> (Dijkstra, Floyd-Warshall)</span></li>
+          <li><span class="feature-icon">✓</span> <span>Solve company-specific interview problems</span></li>
+          <li><span class="feature-icon">✓</span> <span>Optimize solutions for time and space</span></li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </section><!-- Features -->
+     <section style="padding: 60px 24px; background: white;">
+      <div class="max-w-6xl mx-auto">
+       <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Why Choose DSA Academy?</h2>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          📚
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Comprehensive Content</h3>
+         <p class="text-gray-600 leading-relaxed">Complete coverage of all DSA topics with clear explanations, diagrams, and real-world examples</p>
+        </div>
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          💻
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Multiple Languages</h3>
+         <p class="text-gray-600 leading-relaxed">Code examples in C, C++, Java, and Python with syntax highlighting and copy functionality</p>
+        </div>
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          🤖
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">AI-Powered Learning</h3>
+         <p class="text-gray-600 leading-relaxed">24/7 AI tutor to explain concepts, solve problems, and answer your DSA questions instantly</p>
+        </div>
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          📊
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Visual Learning</h3>
+         <p class="text-gray-600 leading-relaxed">Interactive visualizations and animations to understand how algorithms work step-by-step</p>
+        </div>
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          💪
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Practice Problems</h3>
+         <p class="text-gray-600 leading-relaxed">Curated problem sets from easy to hard with detailed solutions and complexity analysis</p>
+        </div>
+        <div class="text-center">
+         <div class="text-6xl mb-4">
+          🎯
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-gray-800">Interview Ready</h3>
+         <p class="text-gray-600 leading-relaxed">Company-specific questions, common mistakes, and tips to ace technical interviews</p>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- Introduction Page -->
+    <div id="introductionPage" class="page-content hidden" style="padding: 40px 24px 80px; background: #f7fafc;">
+     <div class="max-w-5xl mx-auto">
+      <div class="breadcrumb"><span onclick="navigateToPage('home')" style="cursor: pointer;">Home</span> <span class="breadcrumb-separator">›</span> <span class="breadcrumb-current">Introduction to DSA</span>
+      </div>
+      <div class="content-section fade-in">
+       <h1 class="section-title">📖 Introduction to Data Structures &amp; Algorithms</h1>
+       <p class="text-gray-700 text-lg leading-relaxed mb-6">Data Structures and Algorithms (DSA) form the foundation of computer science and software engineering. Understanding DSA is crucial for writing efficient, scalable, and maintainable code. Whether you're preparing for technical interviews, building complex systems, or simply want to become a better programmer, mastering DSA is essential.</p>
+       <h2 class="section-subtitle">🎯 What are Data Structures?</h2>
+       <p class="text-gray-700 leading-relaxed mb-4">A <strong>data structure</strong> is a specialized format for organizing, processing, storing, and retrieving data. Different data structures are suited for different kinds of applications, and some are highly specialized for specific tasks.</p>
+       <p class="text-gray-700 leading-relaxed mb-6">Think of data structures as containers that hold your data in a specific format. Just as you use different containers in real life (boxes, bottles, bags) for different purposes, you use different data structures for different computational needs.</p>
+       <h2 class="section-subtitle">⚙️ What are Algorithms?</h2>
+       <p class="text-gray-700 leading-relaxed mb-4">An <strong>algorithm</strong> is a step-by-step procedure or formula for solving a problem. It's a sequence of well-defined instructions that takes some input, processes it, and produces an output.</p>
+       <p class="text-gray-700 leading-relaxed mb-6">Algorithms are the recipes for data manipulation. They tell you exactly what operations to perform on your data structures to achieve a desired result.</p>
+       <h2 class="section-subtitle">🔑 Why Learn DSA?</h2>
+       <ul class="feature-list text-gray-700 mb-6">
+        <li><span class="feature-icon">💼</span> <span><strong>Technical Interviews:</strong> Most tech companies (Google, Amazon, Microsoft, etc.) heavily test DSA knowledge in their hiring process</span></li>
+        <li><span class="feature-icon">⚡</span> <span><strong>Performance Optimization:</strong> Understanding DSA helps you write faster, more efficient code that uses less memory</span></li>
+        <li><span class="feature-icon">🧠</span> <span><strong>Problem-Solving Skills:</strong> DSA trains your brain to think logically and break down complex problems</span></li>
+        <li><span class="feature-icon">🏗️</span> <span><strong>System Design:</strong> Essential for building scalable applications and understanding how software systems work</span></li>
+        <li><span class="feature-icon">📈</span> <span><strong>Career Growth:</strong> Opens doors to senior engineering roles and competitive programming</span></li>
+       </ul>
+       <h2 class="section-subtitle">📊 Types of Data Structures</h2>
+       <div class="diagram-container mb-6">
+        <div style="text-align: center; max-width: 700px;">
+         <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 16px;">
+          <h4 class="font-bold text-lg mb-4">Data Structures Classification</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+           <div style="background: #edf2f7; padding: 16px; border-radius: 8px; border-left: 4px solid #667eea;">
+            <h5 class="font-bold mb-2">Linear</h5>
+            <div class="text-sm text-gray-700 space-y-1">
+             <div>
+              • Arrays
+             </div>
+             <div>
+              • Linked Lists
+             </div>
+             <div>
+              • Stacks
+             </div>
+             <div>
+              • Queues
+             </div>
+            </div>
+           </div>
+           <div style="background: #edf2f7; padding: 16px; border-radius: 8px; border-left: 4px solid #764ba2;">
+            <h5 class="font-bold mb-2">Non-Linear</h5>
+            <div class="text-sm text-gray-700 space-y-1">
+             <div>
+              • Trees
+             </div>
+             <div>
+              • Graphs
+             </div>
+             <div>
+              • Heaps
+             </div>
+             <div>
+              • Hash Tables
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <h2 class="section-subtitle">🎓 How to Learn DSA Effectively</h2>
+       <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="content-section">
+         <h3 class="font-bold text-lg mb-3 text-gray-800">📝 Study Strategy</h3>
+         <ol class="text-gray-700 space-y-2" style="list-style: decimal; padding-left: 20px;">
+          <li>Understand the concept thoroughly before coding</li>
+          <li>Draw diagrams and visualize the operations</li>
+          <li>Implement from scratch without looking at solutions</li>
+          <li>Analyze time and space complexity</li>
+          <li>Practice variations and edge cases</li>
+         </ol>
+        </div>
+        <div class="content-section">
+         <h3 class="font-bold text-lg mb-3 text-gray-800">⚡ Practice Tips</h3>
+         <ol class="text-gray-700 space-y-2" style="list-style: decimal; padding-left: 20px;">
+          <li>Start with easy problems, gradually increase difficulty</li>
+          <li>Solve at least one problem daily consistently</li>
+          <li>Revise previously solved problems regularly</li>
+          <li>Learn multiple approaches to the same problem</li>
+          <li>Participate in coding contests and challenges</li>
+         </ol>
+        </div>
+       </div>
+       <h2 class="section-subtitle">🚀 Getting Started</h2>
+       <p class="text-gray-700 leading-relaxed mb-4">We recommend starting with these foundational topics in order:</p>
+       <div class="grid md:grid-cols-3 gap-4">
+        <div class="glass-card p-6 cursor-pointer" onclick="navigateToPage('complexity')">
+         <div class="text-3xl mb-2">
+          ⏱️
+         </div>
+         <h4 class="font-bold mb-2">Step 1: Complexity</h4>
+         <p class="text-sm text-gray-600">Learn Big O notation</p>
+        </div>
+        <div class="glass-card p-6 cursor-pointer" onclick="navigateToPage('arrays')">
+         <div class="text-3xl mb-2">
+          📊
+         </div>
+         <h4 class="font-bold mb-2">Step 2: Arrays</h4>
+         <p class="text-sm text-gray-600">Master the basics</p>
+        </div>
+        <div class="glass-card p-6 cursor-pointer" onclick="navigateToPage('practice')">
+         <div class="text-3xl mb-2">
+          💪
+         </div>
+         <h4 class="font-bold mb-2">Step 3: Practice</h4>
+         <p class="text-sm text-gray-600">Solve problems daily</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Complexity Analysis Page -->
+    <div id="complexityPage" class="page-content hidden" style="padding: 40px 24px 80px; background: #f7fafc;">
+     <div class="max-w-5xl mx-auto">
+      <div class="breadcrumb"><span onclick="navigateToPage('home')" style="cursor: pointer;">Home</span> <span class="breadcrumb-separator">›</span> <span class="breadcrumb-current">Time &amp; Space Complexity</span>
+      </div>
+      <div class="content-section fade-in">
+       <h1 class="section-title">⏱️ Time &amp; Space Complexity Analysis</h1>
+       <p class="text-gray-700 text-lg leading-relaxed mb-6">Complexity analysis is the process of determining how the resource usage (time and memory) of an algorithm grows as the input size increases. This is crucial for comparing algorithms and choosing the most efficient solution.</p>
+       <h2 class="section-subtitle">📊 Big O Notation</h2>
+       <p class="text-gray-700 leading-relaxed mb-4"><strong>Big O notation</strong> describes the upper bound of an algorithm's growth rate. It provides a worst-case guarantee on the resources an algorithm will consume. We focus on the dominant term and ignore constants and lower-order terms.</p>
+       <h3 class="font-semibold text-lg mb-3 text-gray-800">Common Time Complexities (Best to Worst):</h3>
+       <table class="complexity-table mb-6">
+        <thead>
+         <tr>
+          <th>Notation</th>
+          <th>Name</th>
+          <th>Example</th>
+          <th>Description</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Constant</td>
+          <td>Array access</td>
+          <td>Time doesn't depend on input size</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-excellent">O(log n)</span></td>
+          <td>Logarithmic</td>
+          <td>Binary search</td>
+          <td>Divides problem in half each step</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-good">O(n)</span></td>
+          <td>Linear</td>
+          <td>Linear search</td>
+          <td>Processes each element once</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-medium">O(n log n)</span></td>
+          <td>Linearithmic</td>
+          <td>Merge sort</td>
+          <td>Efficient sorting algorithms</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-medium">O(n²)</span></td>
+          <td>Quadratic</td>
+          <td>Bubble sort</td>
+          <td>Nested loops over input</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-bad">O(n³)</span></td>
+          <td>Cubic</td>
+          <td>Triple nested loops</td>
+          <td>Three nested iterations</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-bad">O(2ⁿ)</span></td>
+          <td>Exponential</td>
+          <td>Fibonacci recursion</td>
+          <td>Doubles with each input increase</td>
+         </tr>
+         <tr>
+          <td><span class="complexity-badge complexity-bad">O(n!)</span></td>
+          <td>Factorial</td>
+          <td>Permutations</td>
+          <td>Generating all permutations</td>
+         </tr>
+        </tbody>
+       </table>
+       <h2 class="section-subtitle">📈 Growth Rate Comparison</h2>
+       <div class="diagram-container mb-6">
+        <div style="text-align: center; max-width: 100%;">
+         <div style="background: white; padding: 24px; border-radius: 12px;">
+          <h4 class="font-bold text-lg mb-4">Operations for n = 1,000,000</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; text-align: left;">
+           <div style="background: #c6f6d5; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(1)
+            </div>
+            <div class="text-xs text-gray-700">
+             1 operation
+            </div>
+           </div>
+           <div style="background: #c6f6d5; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(log n)
+            </div>
+            <div class="text-xs text-gray-700">
+             ~20 operations
+            </div>
+           </div>
+           <div style="background: #bee3f8; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(n)
+            </div>
+            <div class="text-xs text-gray-700">
+             1M operations
+            </div>
+           </div>
+           <div style="background: #fef5e7; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(n log n)
+            </div>
+            <div class="text-xs text-gray-700">
+             ~20M operations
+            </div>
+           </div>
+           <div style="background: #fed7d7; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(n²)
+            </div>
+            <div class="text-xs text-gray-700">
+             1T operations
+            </div>
+           </div>
+           <div style="background: #fed7d7; padding: 12px; border-radius: 8px;">
+            <div class="font-bold text-sm">
+             O(2ⁿ)
+            </div>
+            <div class="text-xs text-gray-700">
+             Impossible!
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <h2 class="section-subtitle">💻 Code Examples</h2>
+       <h3 class="font-semibold text-gray-700 mb-2">O(1) - Constant Time</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Accessing array element by index</span> <span class="keyword">int</span> <span class="function">getElement</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> index) { <span class="keyword">return</span> arr[index]; <span class="comment">// O(1) - single operation</span> } <span class="comment">// Hash table lookup</span> <span class="keyword">int</span> <span class="function">getValue</span>(unordered_map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; map, <span class="keyword">int</span> key) { <span class="keyword">return</span> map[key]; <span class="comment">// O(1) average case</span> }
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">O(n) - Linear Time</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Finding maximum element in array</span> <span class="keyword">int</span> <span class="function">findMax</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">int</span> maxVal = arr[<span class="number">0</span>]; <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) { <span class="keyword">if</span> (arr[i] &gt; maxVal) { maxVal = arr[i]; } } <span class="keyword">return</span> maxVal; <span class="comment">// O(n) - iterates through all elements</span> }
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">O(n²) - Quadratic Time</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Bubble Sort - nested loops</span> <span class="keyword">void</span> <span class="function">bubbleSort</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n-<span class="number">1</span>; i++) { <span class="comment">// O(n)</span> <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n-i-<span class="number">1</span>; j++) { <span class="comment">// O(n)</span> <span class="keyword">if</span> (arr[j] &gt; arr[j+<span class="number">1</span>]) { swap(arr[j], arr[j+<span class="number">1</span>]); } } } <span class="comment">// Total: O(n²)</span> }
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">O(log n) - Logarithmic Time</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Binary Search - divides search space in half</span> <span class="keyword">int</span> <span class="function">binarySearch</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n, <span class="keyword">int</span> target) { <span class="keyword">int</span> left = <span class="number">0</span>, right = n - <span class="number">1</span>; <span class="keyword">while</span> (left &lt;= right) { <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>; <span class="keyword">if</span> (arr[mid] == target) <span class="keyword">return</span> mid; <span class="keyword">if</span> (arr[mid] &lt; target) left = mid + <span class="number">1</span>; <span class="keyword">else</span> right = mid - <span class="number">1</span>; } <span class="keyword">return</span> -<span class="number">1</span>; <span class="comment">// O(log n)</span> }
+       </div>
+       <h2 class="section-subtitle">💾 Space Complexity</h2>
+       <p class="text-gray-700 leading-relaxed mb-4"><strong>Space complexity</strong> measures the total amount of memory an algorithm needs relative to the input size. It includes both auxiliary space (extra space used by the algorithm) and space used by the input.</p>
+       <h3 class="font-semibold text-lg mb-3 text-gray-800">Space Complexity Examples:</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// O(1) Space - only uses fixed variables</span> <span class="keyword">int</span> <span class="function">sum</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">int</span> total = <span class="number">0</span>; <span class="comment">// Single variable</span> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) { total += arr[i]; } <span class="keyword">return</span> total; <span class="comment">// Space: O(1)</span> } <span class="comment">// O(n) Space - creates new array</span> <span class="keyword">int</span>* <span class="function">duplicate</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">int</span>* newArr = <span class="keyword">new int</span>[n]; <span class="comment">// Array of size n</span> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) { newArr[i] = arr[i]; } <span class="keyword">return</span> newArr; <span class="comment">// Space: O(n)</span> }
+       </div>
+       <h2 class="section-subtitle">🎯 Key Rules for Analysis</h2>
+       <ul class="feature-list text-gray-700 mb-6">
+        <li><span class="feature-icon">1️⃣</span> <span><strong>Drop Constants:</strong> O(2n) becomes O(n), O(3) becomes O(1)</span></li>
+        <li><span class="feature-icon">2️⃣</span> <span><strong>Drop Lower Terms:</strong> O(n² + n) becomes O(n²)</span></li>
+        <li><span class="feature-icon">3️⃣</span> <span><strong>Different Inputs Use Different Variables:</strong> O(a + b) not O(n)</span></li>
+        <li><span class="feature-icon">4️⃣</span> <span><strong>Sequential Steps Add:</strong> O(a) then O(b) = O(a + b)</span></li>
+        <li><span class="feature-icon">5️⃣</span> <span><strong>Nested Steps Multiply:</strong> O(a) nested in O(b) = O(a × b)</span></li>
+       </ul>
+       <div class="glass-card p-6 bg-blue-50">
+        <h3 class="font-bold text-lg mb-3">💡 Pro Tip</h3>
+        <p class="text-gray-700 leading-relaxed">When analyzing code, focus on loops and recursive calls. A single loop is O(n), nested loops are typically O(n²), and recursion that branches requires careful analysis of the recurrence relation. Always consider the worst-case scenario unless specifically analyzing average or best case.</p>
+       </div>
+      </div>
+     </div>
+    </div><!-- Arrays Page - Already comprehensive in original, keeping similar structure -->
+    <div id="arraysPage" class="page-content hidden" style="padding: 40px 24px 80px; background: #f7fafc;">
+     <div class="max-w-5xl mx-auto">
+      <div class="breadcrumb"><span onclick="navigateToPage('home')" style="cursor: pointer;">Home</span> <span class="breadcrumb-separator">›</span> <span>Linear Structures</span> <span class="breadcrumb-separator">›</span> <span class="breadcrumb-current">Arrays</span>
+      </div>
+      <div class="content-section fade-in">
+       <h1 class="section-title">📊 Arrays - Foundation of Data Structures</h1>
+       <p class="text-gray-700 text-lg leading-relaxed mb-6">An <strong>array</strong> is a collection of elements stored in contiguous memory locations. It's the most fundamental and widely used data structure, providing efficient random access to elements through indexing. Arrays form the basis for many other data structures and algorithms.</p>
+       <h2 class="section-subtitle">🎯 What is an Array?</h2>
+       <p class="text-gray-700 leading-relaxed mb-4">An array is a linear data structure where elements of the same data type are stored in adjacent memory locations. Each element can be accessed directly using its index, which starts from 0 in most programming languages.</p>
+       <div class="diagram-container mb-6">
+        <div style="text-align: center; max-width: 100%;">
+         <div style="background: white; padding: 24px; border-radius: 12px;">
+          <h4 class="font-bold mb-4">Array Structure</h4>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 4px; flex-wrap: wrap;">
+           <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="border: 3px solid #667eea; padding: 16px 24px; background: #edf2f7; font-weight: bold; border-radius: 8px;">
+             10
+            </div>
+            <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+             Index 0
+            </div>
+           </div>
+           <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="border: 3px solid #667eea; padding: 16px 24px; background: #edf2f7; font-weight: bold; border-radius: 8px;">
+             20
+            </div>
+            <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+             Index 1
+            </div>
+           </div>
+           <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="border: 3px solid #667eea; padding: 16px 24px; background: #edf2f7; font-weight: bold; border-radius: 8px;">
+             30
+            </div>
+            <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+             Index 2
+            </div>
+           </div>
+           <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="border: 3px solid #667eea; padding: 16px 24px; background: #edf2f7; font-weight: bold; border-radius: 8px;">
+             40
+            </div>
+            <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+             Index 3
+            </div>
+           </div>
+           <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="border: 3px solid #667eea; padding: 16px 24px; background: #edf2f7; font-weight: bold; border-radius: 8px;">
+             50
+            </div>
+            <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+             Index 4
+            </div>
+           </div>
+          </div>
+          <div style="margin-top: 16px; font-size: 14px; color: #4a5568;"><strong>arr[2]</strong> = 30 (Direct O(1) access)
+          </div>
+         </div>
+        </div>
+       </div>
+       <h2 class="section-subtitle">✨ Key Characteristics</h2>
+       <ul class="feature-list text-gray-700 mb-6">
+        <li><span class="feature-icon">📏</span> <span><strong>Fixed Size:</strong> Traditional arrays have a predetermined size that cannot change after creation (dynamic arrays like vectors/ArrayList can grow)</span></li>
+        <li><span class="feature-icon">🔢</span> <span><strong>Homogeneous:</strong> All elements must be of the same data type</span></li>
+        <li><span class="feature-icon">🎯</span> <span><strong>Random Access:</strong> Any element can be accessed in O(1) time using its index</span></li>
+        <li><span class="feature-icon">💾</span> <span><strong>Contiguous Memory:</strong> Elements are stored in adjacent memory locations, making cache-friendly</span></li>
+        <li><span class="feature-icon">0️⃣</span> <span><strong>Zero-Based Indexing:</strong> First element is at index 0, last at (size-1)</span></li>
+       </ul>
+       <h2 class="section-subtitle">💻 Array Declaration &amp; Initialization</h2>
+       <h3 class="font-semibold text-gray-700 mb-2">C/C++ Arrays</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Declaration</span> <span class="keyword">int</span> arr1[<span class="number">5</span>]; <span class="comment">// Uninitialized array of size 5</span> <span class="comment">// Declaration with initialization</span> <span class="keyword">int</span> arr2[<span class="number">5</span>] = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>}; <span class="comment">// Size inferred from initializer</span> <span class="keyword">int</span> arr3[] = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>}; <span class="comment">// Size = 4</span> <span class="comment">// Partial initialization (rest filled with 0)</span> <span class="keyword">int</span> arr4[<span class="number">5</span>] = {<span class="number">1</span>, <span class="number">2</span>}; <span class="comment">// {1, 2, 0, 0, 0}</span> <span class="comment">// Dynamic array using vector (recommended)</span> vector&lt;<span class="keyword">int</span>&gt; vec = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>}; vec.push_back(<span class="number">40</span>); <span class="comment">// Can grow dynamically</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">Java Arrays</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">Java</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Declaration</span> <span class="keyword">int</span>[] arr1 = <span class="keyword">new int</span>[<span class="number">5</span>]; <span class="comment">// All elements initialized to 0</span> <span class="comment">// Declaration with initialization</span> <span class="keyword">int</span>[] arr2 = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>}; <span class="comment">// ArrayList (dynamic array)</span> ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;(); list.add(<span class="number">10</span>); list.add(<span class="number">20</span>); <span class="comment">// Access elements</span> <span class="keyword">int</span> value = arr2[<span class="number">0</span>]; <span class="comment">// 10</span> <span class="keyword">int</span> length = arr2.length; <span class="comment">// 5</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">Python Lists (Dynamic Arrays)</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">Python</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment"># List creation</span> arr1 = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>] <span class="comment"># Empty list</span> arr2 = [] <span class="comment"># List with specific size</span> arr3 = [<span class="number">0</span>] * <span class="number">5</span> <span class="comment"># [0, 0, 0, 0, 0]</span> <span class="comment"># List operations</span> arr1.append(<span class="number">60</span>) <span class="comment"># Add element</span> arr1.insert(<span class="number">0</span>, <span class="number">5</span>) <span class="comment"># Insert at index 0</span> arr1.pop() <span class="comment"># Remove last element</span> arr1.remove(<span class="number">20</span>) <span class="comment"># Remove specific value</span> <span class="comment"># Access elements</span> value = arr1[<span class="number">0</span>] <span class="comment"># First element</span> last = arr1[-<span class="number">1</span>] <span class="comment"># Last element</span> length = <span class="function">len</span>(arr1) <span class="comment"># Length of list</span>
+       </div>
+       <h2 class="section-subtitle">🔧 Common Array Operations</h2>
+       <h3 class="font-semibold text-gray-700 mb-2">1. Traversal - Visit All Elements</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="keyword">void</span> <span class="function">printArray</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) { cout &lt;&lt; arr[i] &lt;&lt; <span class="string">" "</span>; } cout &lt;&lt; endl; } <span class="comment">// Time: O(n), Space: O(1)</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">2. Insertion - Add Element</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Insert element at specific position</span> <span class="keyword">void</span> <span class="function">insertElement</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span>&amp; n, <span class="keyword">int</span> pos, <span class="keyword">int</span> value) { <span class="comment">// Shift elements to the right</span> <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt; pos; i--) { arr[i] = arr[i-<span class="number">1</span>]; } arr[pos] = value; n++; <span class="comment">// Increase size</span> } <span class="comment">// Time: O(n) - worst case when inserting at beginning</span> <span class="comment">// Space: O(1)</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">3. Deletion - Remove Element</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Delete element at specific position</span> <span class="keyword">void</span> <span class="function">deleteElement</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span>&amp; n, <span class="keyword">int</span> pos) { <span class="comment">// Shift elements to the left</span> <span class="keyword">for</span> (<span class="keyword">int</span> i = pos; i &lt; n-<span class="number">1</span>; i++) { arr[i] = arr[i+<span class="number">1</span>]; } n--; <span class="comment">// Decrease size</span> } <span class="comment">// Time: O(n) - worst case when deleting from beginning</span> <span class="comment">// Space: O(1)</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">4. Searching - Find Element</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Linear Search</span> <span class="keyword">int</span> <span class="function">linearSearch</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n, <span class="keyword">int</span> target) { <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) { <span class="keyword">if</span> (arr[i] == target) { <span class="keyword">return</span> i; <span class="comment">// Return index</span> } } <span class="keyword">return</span> -<span class="number">1</span>; <span class="comment">// Not found</span> } <span class="comment">// Time: O(n), Space: O(1)</span>
+       </div>
+       <h3 class="font-semibold text-gray-700 mb-2 mt-6">5. Reverse Array</h3>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// Two-pointer approach</span> <span class="keyword">void</span> <span class="function">reverseArray</span>(<span class="keyword">int</span> arr[], <span class="keyword">int</span> n) { <span class="keyword">int</span> left = <span class="number">0</span>, right = n - <span class="number">1</span>; <span class="keyword">while</span> (left &lt; right) { swap(arr[left], arr[right]); left++; right--; } } <span class="comment">// Time: O(n), Space: O(1)</span>
+       </div>
+       <h2 class="section-subtitle">⚡ Time &amp; Space Complexity</h2>
+       <table class="complexity-table mb-6">
+        <thead>
+         <tr>
+          <th>Operation</th>
+          <th>Time Complexity</th>
+          <th>Space Complexity</th>
+          <th>Notes</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td>Access</td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Direct index access</td>
+         </tr>
+         <tr>
+          <td>Search (Unsorted)</td>
+          <td><span class="complexity-badge complexity-good">O(n)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Linear search required</td>
+         </tr>
+         <tr>
+          <td>Search (Sorted)</td>
+          <td><span class="complexity-badge complexity-excellent">O(log n)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Binary search possible</td>
+         </tr>
+         <tr>
+          <td>Insert (End)</td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>If space available</td>
+         </tr>
+         <tr>
+          <td>Insert (Position)</td>
+          <td><span class="complexity-badge complexity-good">O(n)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Requires shifting elements</td>
+         </tr>
+         <tr>
+          <td>Delete</td>
+          <td><span class="complexity-badge complexity-good">O(n)</span></td>
+          <td><span class="complexity-badge complexity-excellent">O(1)</span></td>
+          <td>Requires shifting elements</td>
+         </tr>
+        </tbody>
+       </table>
+       <h2 class="section-subtitle">🎨 Multi-Dimensional Arrays</h2>
+       <p class="text-gray-700 leading-relaxed mb-4">Arrays can have multiple dimensions. 2D arrays (matrices) are most common, used in image processing, game boards, and dynamic programming.</p>
+       <div class="code-block">
+        <div class="code-header"><span class="code-language">C++</span> <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div><span class="comment">// 2D Array Declaration</span> <span class="keyword">int</span> matrix[<span class="number">3</span>][<span class="number">4</span>]; <span class="comment">// 3 rows, 4 columns</span> <span class="comment">// 2D Array Initialization</span> <span class="keyword">int</span> mat[<span class="number">3</span>][<span class="number">3</span>] = { {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>}, {<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>}, {<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>} }; <span class="comment">// Accessing elements</span> <span class="keyword">int</span> value = mat[<span class="number">1</span>][<span class="number">2</span>]; <span class="comment">// 6 (row 1, column 2)</span> <span class="comment">// Traversing 2D array</span> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) { <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) { cout &lt;&lt; mat[i][j] &lt;&lt; <span class="string">" "</span>; } cout &lt;&lt; endl; } <span class="comment">// Time: O(rows × columns)</span>
+       </div>
+       <h2 class="section-subtitle">💡 Advantages &amp; Disadvantages</h2>
+       <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="content-section">
+         <h3 class="font-bold text-lg mb-3" style="color: #22543d;">✅ Advantages</h3>
+         <ul class="text-gray-700 space-y-2 text-sm">
+          <li>• <strong>Fast Access:</strong> O(1) time to access any element by index</li>
+          <li>• <strong>Cache Friendly:</strong> Contiguous memory improves cache performance</li>
+          <li>• <strong>Simple:</strong> Easy to understand and implement</li>
+          <li>• <strong>Memory Efficient:</strong> No extra memory for pointers</li>
+          <li>• <strong>Predictable:</strong> Fixed size makes memory management easier</li>
+         </ul>
+        </div>
+        <div class="content-section">
+         <h3 class="font-bold text-lg mb-3" style="color: #c53030;">❌ Disadvantages</h3>
+         <ul class="text-gray-700 space-y-2 text-sm">
+          <li>• <strong>Fixed Size:</strong> Cannot grow or shrink dynamically (static arrays)</li>
+          <li>• <strong>Insertion/Deletion Cost:</strong> O(n) time due to shifting elements</li>
+          <li>• <strong>Memory Waste:</strong> Unused allocated space if array not filled</li>
+          <li>• <strong>Homogeneous:</strong> Can only store one data type</li>
+          <li>• <strong>Contiguous Memory:</strong> Large arrays may fail to allocate</li>
+         </ul>
+        </div>
+       </div>
+       <h2 class="section-subtitle">🎯 Common Interview Problems</h2>
+       <div class="space-y-4 mb-6">
+        <div class="problem-card">
+         <div class="flex justify-between items-start mb-3">
+          <h4 class="font-bold text-lg text-gray-800">1. Two Sum Problem</h4><span class="complexity-badge difficulty-easy">Easy</span>
+         </div>
+         <p class="text-gray-600 mb-3 text-sm">Find two numbers in array that add up to a target sum.</p>
+         <div class="bg-gray-50 p-3 rounded-lg text-sm"><strong>Input:</strong> arr = [2, 7, 11, 15], target = 9<br><strong>Output:</strong> [0, 1] (arr[0] + arr[1] = 2 + 7 = 9)<br><strong>Approach:</strong> Use hash map to store complements - O(n) time, O(n) space
+         </div>
+        </div>
+        <div class="problem-card">
+         <div class="flex justify-between items-start mb-3">
+          <h4 class="font-bold text-lg text-gray-800">2. Find Maximum Subarray Sum (Kadane's)</h4><span class="complexity-badge difficulty-medium">Medium</span>
+         </div>
+         <p class="text-gray-600 mb-3 text-sm">Find contiguous subarray with largest sum.</p>
+         <div class="bg-gray-50 p-3 rounded-lg text-sm"><strong>Input:</strong> [-2, 1, -3, 4, -1, 2, 1, -5, 4]<br><strong>Output:</strong> 6 (subarray [4, -1, 2, 1])<br><strong>Approach:</strong> Dynamic programming - O(n) time, O(1) space
+         </div>
+        </div>
+        <div class="problem-card">
+         <div class="flex justify-between items-start mb-3">
+          <h4 class="font-bold text-lg text-gray-800">3. Rotate Array</h4><span class="complexity-badge difficulty-easy">Easy</span>
+         </div>
+         <p class="text-gray-600 mb-3 text-sm">Rotate array to the right by k steps.</p>
+         <div class="bg-gray-50 p-3 rounded-lg text-sm"><strong>Input:</strong> arr = [1,2,3,4,5,6,7], k = 3<br><strong>Output:</strong> [5,6,7,1,2,3,4]<br><strong>Approach:</strong> Reverse technique (3 reverses) - O(n) time, O(1) space
+         </div>
+        </div>
+        <div class="problem-card">
+         <div class="flex justify-between items-start mb-3">
+          <h4 class="font-bold text-lg text-gray-800">4. Merge Sorted Arrays</h4><span class="complexity-badge difficulty-easy">Easy</span>
+         </div>
+         <p class="text-gray-600 mb-3 text-sm">Merge two sorted arrays into one sorted array.</p>
+         <div class="bg-gray-50 p-3 rounded-lg text-sm"><strong>Input:</strong> arr1 = [1,3,5], arr2 = [2,4,6]<br><strong>Output:</strong> [1,2,3,4,5,6]<br><strong>Approach:</strong> Two pointers - O(n+m) time, O(n+m) space
+         </div>
+        </div>
+       </div>
+       <h2 class="section-subtitle">🌟 Real-World Applications</h2>
+       <ul class="feature-list text-gray-700 mb-6">
+        <li><span class="feature-icon">📱</span> <span><strong>Mobile Apps:</strong> Contact lists, message histories, app settings</span></li>
+        <li><span class="feature-icon">🎮</span> <span><strong>Game Development:</strong> Game boards, tile maps, sprite sheets</span></li>
+        <li><span class="feature-icon">🖼️</span> <span><strong>Image Processing:</strong> Pixel data representation (2D/3D arrays)</span></li>
+        <li><span class="feature-icon">📊</span> <span><strong>Data Analysis:</strong> Time series data, sensor readings, logs</span></li>
+        <li><span class="feature-icon">🗄️</span> <span><strong>Databases:</strong> Index structures, buffer pools</span></li>
+        <li><span class="feature-icon">🔢</span> <span><strong>Scientific Computing:</strong> Matrices, vectors, simulations</span></li>
+       </ul>
+       <div class="glass-card p-6 bg-purple-50">
+        <h3 class="font-bold text-lg mb-3">🎓 Key Takeaways</h3>
+        <ul class="text-gray-700 space-y-2 text-sm">
+         <li>✓ Arrays provide <strong>O(1) access</strong> time - fastest for random access</li>
+         <li>✓ Use arrays when you know the size beforehand or need fast access</li>
+         <li>✓ Consider dynamic arrays (vector/ArrayList) for flexibility</li>
+         <li>✓ Arrays are the foundation - master them before moving to complex structures</li>
+         <li>✓ Many problems can be solved with arrays + two pointers or sliding window</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div><!-- Continue with more comprehensive pages... Due to length, showing structure for remaining pages --> <!-- Placeholder pages for remaining topics - would follow same comprehensive pattern -->
+    <div id="linked-listsPage" class="page-content hidden" style="padding: 40px 24px 80px; background: #f7fafc;">
+     <div class="max-w-5xl mx-auto">
+      <div class="content-section">
+       <h1 class="section-title">🔗 Linked Lists - Dynamic Data Structure</h1>
+       <p class="text-gray-700 text-lg">Comprehensive content on singly linked lists, doubly linked lists, circular linked lists with full implementation details...</p>
+       <div class="glass-card p-6 bg-blue-50 mt-6">
+        <p class="text-gray-700">This page would contain complete coverage of linked lists similar to the arrays page - implementations in multiple languages, complexity analysis, visual diagrams, common problems, and real-world applications.</p>
+       </div>
+      </div>
+     </div>
+    </div><!-- Similar comprehensive pages would be created for all topics --> <!-- Footer -->
+    <footer style="background: #1a202c; color: white; padding: 60px 24px 40px;">
+     <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+       <div>
+        <h3 class="text-xl font-bold mb-4" id="footerPlatformName">DSA Academy</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-4" id="footerAbout">A comprehensive learning platform designed for students, developers, and interview candidates to master data structures and algorithms.</p>
+        <p class="text-gray-400 text-sm" id="footerMission">Making DSA concepts accessible to everyone through clear explanations and hands-on practice.</p>
+       </div>
+       <div>
+        <h4 class="font-semibold mb-4 text-gray-300">📚 Learn</h4>
+        <ul class="space-y-2 text-sm">
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('introduction')">Introduction</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('complexity')">Complexity Analysis</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('arrays')">Arrays</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('trees')">Trees</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('graphs')">Graphs</a></li>
+        </ul>
+       </div>
+       <div>
+        <h4 class="font-semibold mb-4 text-gray-300">🎯 Practice</h4>
+        <ul class="space-y-2 text-sm">
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('practice')">Practice Problems</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('interview')">Interview Questions</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('mistakes')">Common Mistakes</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-white transition" onclick="navigateToPage('resources')">Resources</a></li>
+        </ul>
+       </div>
+       <div>
+        <h4 class="font-semibold mb-4 text-gray-300">🔗 Connect</h4>
+        <ul class="space-y-2 text-sm">
+         <li class="text-gray-400">📧 Email: learn@dsaacademy.com</li>
+         <li class="text-gray-400">🐙 GitHub: github.com/dsa-academy</li>
+         <li class="text-gray-400">💬 Discord Community</li>
+         <li class="text-gray-400">🐦 Twitter: @dsaacademy</li>
+        </ul>
+       </div>
+      </div>
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 32px; text-align: center;">
+       <p class="text-gray-400 text-sm mb-3">© 2024 DSA Academy. All rights reserved.</p>
+       <p class="text-gray-500 text-xs">Built with ❤️ for students and developers worldwide</p>
+       <p class="text-gray-500 text-xs mt-2">Note: AI Assistant is a demo interface showing potential functionality</p>
+      </div>
+     </div>
+    </footer>
+   </main><!-- AI Chat Widget -->
+   <div class="chat-widget">
+    <div class="chat-window" id="chatWindow">
+     <div class="chat-header">
+      <div>
+       <div class="chat-header-title">
+        🤖 DSA AI Tutor
+       </div>
+       <div class="chat-header-subtitle">
+        Ask me anything about DSA
+       </div>
+      </div><button class="chat-close" onclick="closeChat()">×</button>
+     </div>
+     <div class="chat-messages" id="chatMessages">
+      <div class="chat-message bot">
+       👋 Hello! I'm your AI DSA tutor. I can help you with: <br><br>
+        • Explaining any DSA concept in detail<br>
+        • Walking through algorithms step-by-step<br>
+        • Analyzing time and space complexity<br>
+        • Solving coding problems<br>
+        • Converting code between languages<br>
+        • Debugging your solutions<br><br>
+        Try asking: "Explain binary search" or "How does DFS work?" <br><br><em style="font-size: 12px; opacity: 0.8;">Note: This is a demo interface. Actual AI functionality requires backend integration with GPT/Claude API.</em>
+      </div>
+     </div>
+     <div class="chat-input-area">
+      <div class="chat-suggestions">
+       <div class="suggestion-chip" onclick="sendSuggestion('Explain recursion')">
+        Explain recursion
+       </div>
+       <div class="suggestion-chip" onclick="sendSuggestion('Binary search vs linear search')">
+        Binary vs Linear
+       </div>
+       <div class="suggestion-chip" onclick="sendSuggestion('Solve Two Sum problem')">
+        Two Sum
+       </div>
+      </div>
+      <form class="chat-input-wrapper" id="chatForm"><input type="text" class="chat-input" id="chatInput" placeholder="Ask about DSA topics..."> <button type="submit" class="chat-send">Send</button>
+      </form>
+     </div>
+    </div><button class="chat-button" onclick="toggleChat()">💬</button>
+   </div>
+  </div>
+  <script>
+    // Configuration
+    const defaultConfig = {
+      hero_title: "Master Data Structures the Smart Way",
+      hero_subtitle: "Learn Arrays, Linked Lists, Stacks, Queues, Trees, Graphs & Algorithms with AI Support",
+      platform_name: "DSA Academy",
+      tagline: "Your Complete Guide to Mastering Data Structures & Algorithms",
+      footer_about: "A comprehensive learning platform designed for students, developers, and interview candidates to master data structures and algorithms.",
+      footer_mission: "Making DSA concepts accessible to everyone through clear explanations and hands-on practice."
+    };
+
+    // Element SDK Integration
+    async function onConfigChange(config) {
+      const heroTitle = config.hero_title || defaultConfig.hero_title;
+      const heroSubtitle = config.hero_subtitle || defaultConfig.hero_subtitle;
+      const platformName = config.platform_name || defaultConfig.platform_name;
+      const tagline = config.tagline || defaultConfig.tagline;
+      const footerAbout = config.footer_about || defaultConfig.footer_about;
+      const footerMission = config.footer_mission || defaultConfig.footer_mission;
+
+      const elements = {
+        heroTitle: document.getElementById('heroTitle'),
+        heroSubtitle: document.getElementById('heroSubtitle'),
+        platformName: document.getElementById('platformName'),
+        tagline: document.getElementById('tagline'),
+        footerPlatformName: document.getElementById('footerPlatformName'),
+        footerAbout: document.getElementById('footerAbout'),
+        footerMission: document.getElementById('footerMission')
+      };
+
+      if (elements.heroTitle) elements.heroTitle.textContent = heroTitle;
+      if (elements.heroSubtitle) elements.heroSubtitle.textContent = heroSubtitle;
+      if (elements.platformName) elements.platformName.textContent = platformName;
+      if (elements.tagline) elements.tagline.textContent = tagline;
+      if (elements.footerPlatformName) elements.footerPlatformName.textContent = platformName;
+      if (elements.footerAbout) elements.footerAbout.textContent = footerAbout;
+      if (elements.footerMission) elements.footerMission.textContent = footerMission;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["hero_title", config.hero_title || defaultConfig.hero_title],
+        ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+        ["platform_name", config.platform_name || defaultConfig.platform_name],
+        ["tagline", config.tagline || defaultConfig.tagline],
+        ["footer_about", config.footer_about || defaultConfig.footer_about],
+        ["footer_mission", config.footer_mission || defaultConfig.footer_mission]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Navigation
+    const navItems = document.querySelectorAll('.nav-item');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuToggle = document.getElementById('menuToggle');
+
+    function navigateToPage(pageName) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page-content');
+      pages.forEach(page => page.classList.add('hidden'));
+
+      // Show target page
+      const targetPage = document.getElementById(pageName + 'Page');
+      if (targetPage) {
+        targetPage.classList.remove('hidden');
+      }
+
+      // Update active nav item
+      navItems.forEach(item => item.classList.remove('active'));
+      const targetNav = document.querySelector(`[data-page="${pageName}"]`);
+      if (targetNav) {
+        targetNav.classList.add('active');
+      }
+
+      // Scroll to top
+      mainContent.scrollTop = 0;
+
+      // Close sidebar on mobile
+      if (window.innerWidth < 1024) {
+        sidebar.classList.remove('mobile-open');
+      }
+    }
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const page = item.getAttribute('data-page');
+        navigateToPage(page);
+      });
+    });
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('sidebar-hidden');
+      sidebar.classList.toggle('mobile-open');
+      mainContent.classList.toggle('expanded');
+    });
+
+    // Chat functionality
+    function toggleChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      chatWindow.classList.toggle('active');
+    }
+
+    function openChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      chatWindow.classList.add('active');
+    }
+
+    function closeChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      chatWindow.classList.remove('active');
+    }
+
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      // Add user message
+      const userMessage = document.createElement('div');
+      userMessage.className = 'chat-message user';
+      userMessage.textContent = message;
+      chatMessages.appendChild(userMessage);
+
+      chatInput.value = '';
+
+      // Simulate AI response
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'chat-message bot';
+        
+        // Demo responses based on keywords
+        if (message.toLowerCase().includes('recursion')) {
+          botMessage.innerHTML = `<strong>Recursion</strong> is when a function calls itself to solve smaller instances of the same problem.<br><br>Key concepts:<br>• Base case (stopping condition)<br>• Recursive case (function calls itself)<br>• Each call works on a smaller problem<br><br>Example: Factorial<br>factorial(5) = 5 × factorial(4)<br>factorial(4) = 4 × factorial(3)<br>...<br>factorial(1) = 1 (base case)<br><br>Would you like to see code examples?`;
+        } else if (message.toLowerCase().includes('binary search')) {
+          botMessage.innerHTML = `<strong>Binary Search</strong> is an efficient search algorithm for sorted arrays.<br><br>How it works:<br>1. Start with entire array<br>2. Check middle element<br>3. If match found, return index<br>4. If target < middle, search left half<br>5. If target > middle, search right half<br>6. Repeat until found or space exhausted<br><br>⏱️ Time Complexity: O(log n)<br>💾 Space Complexity: O(1) iterative, O(log n) recursive<br><br>Try it on [1,2,3,4,5,6,7,8,9] searching for 6!`;
+        } else {
+          botMessage.innerHTML = `Thanks for your question about "${message}"! 🤖<br><br>This is a demo interface showing how an AI tutor would work. In a full implementation, I would:<br><br>• Provide detailed explanations<br>• Show code examples in multiple languages<br>• Draw step-by-step visualizations<br>• Analyze complexity<br>• Suggest related problems<br><br>For real AI functionality, this would connect to OpenAI or Anthropic APIs.`;
+        }
+        
+        chatMessages.appendChild(botMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    function sendSuggestion(text) {
+      chatInput.value = text;
+      chatForm.dispatchEvent(new Event('submit'));
+    }
+
+    // Code copy functionality
+    function copyCode(button) {
+      const codeBlock = button.closest('.code-block');
+      const code = codeBlock.innerText.replace('Copy', '').replace('Copied!', '');
+      
+      navigator.clipboard.writeText(code).then(() => {
+        button.textContent = 'Copied!';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.textContent = 'Copy';
+          button.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    const searchData = [
+      { title: 'Arrays', page: 'arrays', snippet: 'Contiguous memory, indexing, O(1) access' },
+      { title: 'Time Complexity', page: 'complexity', snippet: 'Big O notation, algorithm analysis' },
+      { title: 'Binary Search', page: 'searching', snippet: 'O(log n) search in sorted array' },
+      { title: 'Linked Lists', page: 'linked-lists', snippet: 'Dynamic data structure with nodes' },
+      { title: 'Stacks', page: 'stacks', snippet: 'LIFO - Last In First Out' },
+      { title: 'Trees', page: 'trees', snippet: 'Hierarchical structure, BST, traversals' },
+      { title: 'Graphs', page: 'graphs', snippet: 'DFS, BFS, shortest paths' },
+    ];
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      
+      if (query.length < 2) {
+        searchResults.classList.remove('active');
+        return;
+      }
+
+      const filtered = searchData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.snippet.toLowerCase().includes(query)
+      );
+
+      if (filtered.length > 0) {
+        searchResults.innerHTML = filtered.map(item => `
+          <div class="search-result-item" onclick="navigateToPage('${item.page}'); searchResults.classList.remove('active'); searchInput.value = '';">
+            <div class="search-result-title">${item.title}</div>
+            <div class="search-result-snippet">${item.snippet}</div>
+          </div>
+        `).join('');
+        searchResults.classList.add('active');
+      } else {
+        searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+        searchResults.classList.add('active');
+      }
+    });
+
+    // Close search on outside click
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.remove('active');
+      }
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    mainContent.addEventListener('scroll', () => {
+      if (mainContent.scrollTop > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Theme toggle (placeholder)
+    function toggleTheme() {
+      // Toast message
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position: fixed; bottom: 100px; right: 24px; background: #2d3748; color: white; padding: 16px 24px; border-radius: 12px; z-index: 10000; animation: fadeIn 0.3s ease;';
+      toast.textContent = '🌙 Dark mode coming soon!';
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'fadeIn 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
+
+  </script>
+  <!-- Removed injected Cloudflare challenge script and iframe which can cause remote loads when served locally. -->
+</body>
+</html>
