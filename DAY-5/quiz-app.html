@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUIZBLAST</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --bg:      #0d0d14;
+  --surface: #14141f;
+  --card:    #1a1a28;
+  --yellow:  #f5d142;
+  --pink:    #f54272;
+  --cyan:    #42e8f5;
+  --green:   #42f59e;
+  --purple:  #9d42f5;
+  --orange:  #f5832a;
+  --white:   #f0eeff;
+  --muted:   #6b6a82;
+  --border:  rgba(255,255,255,0.07);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Animated BG blobs ── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+.blob1 { width:400px;height:400px;background:var(--purple);top:-100px;left:-100px;animation-delay:0s; }
+.blob2 { width:350px;height:350px;background:var(--pink);bottom:-80px;right:-80px;animation-delay:-3s; }
+.blob3 { width:300px;height:300px;background:var(--cyan);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-6s; }
+
+@keyframes float {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33%      { transform:translate(20px,-20px) scale(1.05); }
+  66%      { transform:translate(-15px,15px) scale(0.95); }
+}
+
+/* ── Wrapper ── */
+.wrapper {
+  width: 100%; max-width: 620px;
+  padding: 20px;
+  position: relative; z-index: 1;
+}
+
+/* ── SCREENS ── */
+.screen { display:none; animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
+.screen.active { display:block; }
+
+@keyframes popIn {
+  from { opacity:0; transform:scale(.92) translateY(16px); }
+  to   { opacity:1; transform:scale(1)  translateY(0); }
+}
+
+/* ── HOME ── */
+.home-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px 40px 40px;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(157,66,245,0.15), 0 24px 60px rgba(0,0,0,0.5);
+  position: relative; overflow: hidden;
+}
+
+.home-card::before {
+  content:'';
+  position:absolute; top:0;left:0;right:0;height:3px;
+  background: linear-gradient(90deg, var(--purple), var(--pink), var(--yellow), var(--cyan));
+}
+
+.logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:5rem; line-height:1;
+  background: linear-gradient(135deg, var(--yellow) 0%, var(--pink) 50%, var(--purple) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:.05em;
+  margin-bottom:6px;
+}
+
+.logo-tag {
+  font-size:.72rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--muted); font-weight:700; margin-bottom:32px;
+}
+
+/* Category chips */
+.category-label {
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:800; color:var(--muted); margin-bottom:14px;
+}
+
+.category-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  margin-bottom:24px;
+}
+
+.cat-chip {
+  padding:14px 8px;
+  background:var(--surface); border:2px solid var(--border);
+  border-radius:14px; cursor:pointer;
+  font-size:.78rem; font-weight:800;
+  color:var(--muted); transition:all .2s;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+}
+.cat-chip .cat-icon { font-size:1.5rem; }
+.cat-chip:hover { border-color:var(--yellow); color:var(--white); transform:translateY(-2px); }
+.cat-chip.selected {
+  border-color: var(--yellow);
+  background: rgba(245,209,66,0.1);
+  color:var(--yellow);
+  box-shadow: 0 0 20px rgba(245,209,66,0.2);
+}
+
+/* Difficulty */
+.diff-grid { display:flex; gap:8px; justify-content:center; margin-bottom:28px; }
+
+.diff-btn {
+  padding:9px 22px;
+  border-radius:50px; border:2px solid var(--border);
+  background:transparent; color:var(--muted);
+  font-family:'Nunito',sans-serif; font-size:.78rem; font-weight:800;
+  cursor:pointer; transition:all .2s; letter-spacing:.04em;
+}
+.diff-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+.diff-btn.selected.easy   { background:rgba(66,245,158,.12); border-color:var(--green);  color:var(--green); }
+.diff-btn.selected.medium { background:rgba(245,131,42,.12); border-color:var(--orange); color:var(--orange); }
+.diff-btn.selected.hard   { background:rgba(245,66,114,.12); border-color:var(--pink);   color:var(--pink); }
+
+.btn-start {
+  width:100%; padding:18px;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  border:none; border-radius:16px;
+  font-family:'Bebas Neue',sans-serif; font-size:1.4rem;
+  letter-spacing:.1em; color:white; cursor:pointer;
+  transition:all .25s;
+  box-shadow: 0 8px 30px rgba(245,66,114,0.35);
+}
+.btn-start:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(245,66,114,0.5); }
+.btn-start:active { transform:translateY(0); }
+
+/* ── QUIZ ── */
+.quiz-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.q-progress-wrap { flex:1; margin:0 16px; }
+
+.q-progress-bar {
+  height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;
+}
+.q-progress-fill {
+  height:100%; border-radius:3px;
+  background: linear-gradient(90deg, var(--pink), var(--purple));
+  transition: width .4s ease;
+}
+
+.q-counter {
+  font-size:.7rem; font-weight:800; letter-spacing:.1em;
+  color:var(--muted); text-align:right; margin-top:4px;
+}
+
+/* Timer */
+.timer-ring {
+  width:52px; height:52px; position:relative; flex-shrink:0;
+}
+
+.timer-ring svg { transform:rotate(-90deg); }
+
+.timer-track { fill:none; stroke:rgba(255,255,255,0.08); stroke-width:4; }
+.timer-fill  { fill:none; stroke:var(--cyan); stroke-width:4; stroke-linecap:round;
+  transition:stroke-dashoffset .9s linear, stroke .3s; }
+
+.timer-num {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--white);
+}
+
+/* Score badge */
+.score-badge {
+  display:flex; flex-direction:column; align-items:center; flex-shrink:0;
+}
+.score-badge .s-label { font-size:.58rem; letter-spacing:.15em; color:var(--muted); font-weight:800; text-transform:uppercase; }
+.score-badge .s-num {
+  font-family:'Bebas Neue',sans-serif; font-size:1.4rem; line-height:1;
+  color:var(--yellow);
+}
+
+/* Question card */
+.q-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px; padding:32px 28px;
+  margin-bottom:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.4);
+  position:relative; overflow:hidden;
+}
+
+.q-card::before {
+  content:'';
+  position:absolute; top:0;left:0;right:0;height:3px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .4s ease;
+}
+.q-card.loaded::before { transform:scaleX(1); }
+
+.q-category {
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:800; margin-bottom:14px;
+}
+
+.q-text {
+  font-size:1.15rem; font-weight:800; line-height:1.5;
+  color:var(--white);
+}
+
+/* Options */
+.options-grid { display:flex; flex-direction:column; gap:10px; }
+
+.option-btn {
+  width:100%; padding:16px 20px;
+  background:var(--surface); border:2px solid var(--border);
+  border-radius:14px; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-size:.9rem; font-weight:700;
+  color:var(--white); text-align:left;
+  display:flex; align-items:center; gap:14px;
+  transition:all .2s; position:relative; overflow:hidden;
+}
+
+.option-btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.04));
+  opacity:0; transition:opacity .2s;
+}
+.option-btn:hover:not(:disabled)::after { opacity:1; }
+
+.option-btn:hover:not(:disabled) {
+  border-color: rgba(255,255,255,0.2);
+  transform:translateX(4px);
+  background:rgba(255,255,255,0.05);
+}
+
+.option-letter {
+  width:30px; height:30px; border-radius:8px; flex-shrink:0;
+  background:rgba(255,255,255,0.06); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:.95rem; letter-spacing:.05em;
+  transition:all .2s;
+}
+
+.option-btn.correct {
+  border-color:var(--green); background:rgba(66,245,158,0.1);
+  color:var(--green); transform:none;
+  animation: correctPulse .4s ease;
+}
+.option-btn.correct .option-letter { background:var(--green); color:var(--bg); border-color:var(--green); }
+
+.option-btn.wrong {
+  border-color:var(--pink); background:rgba(245,66,114,0.1);
+  color:var(--pink); transform:none;
+  animation: shake .4s ease;
+}
+.option-btn.wrong .option-letter { background:var(--pink); color:white; border-color:var(--pink); }
+
+.option-btn.reveal {
+  border-color:rgba(66,245,158,0.3); opacity:.6;
+}
+.option-btn.reveal .option-letter { background:rgba(66,245,158,0.15); }
+
+.option-btn:disabled { cursor:not-allowed; }
+
+@keyframes correctPulse {
+  0%,100% { box-shadow:0 0 0 0 rgba(66,245,158,0); }
+  50%      { box-shadow:0 0 0 8px rgba(66,245,158,0.2); }
+}
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  20%,60% { transform:translateX(-6px); }
+  40%,80% { transform:translateX(6px); }
+}
+
+/* Feedback bar */
+.feedback-bar {
+  height:0; overflow:hidden; transition:height .3s ease;
+  border-radius:12px; display:flex; align-items:center;
+  padding:0 20px; gap:10px; font-weight:800; font-size:.88rem;
+  margin-bottom:16px;
+}
+.feedback-bar.show { height:52px; }
+.feedback-bar.correct-fb { background:rgba(66,245,158,0.12); color:var(--green); border:1px solid rgba(66,245,158,0.3); }
+.feedback-bar.wrong-fb   { background:rgba(245,66,114,0.12);  color:var(--pink);  border:1px solid rgba(245,66,114,0.3); }
+
+/* Next btn */
+.btn-next {
+  width:100%; padding:16px;
+  background:var(--card); border:2px solid var(--border);
+  border-radius:14px; color:var(--white);
+  font-family:'Nunito',sans-serif; font-size:.9rem; font-weight:800;
+  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-next:hover { border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px); }
+.btn-next.hidden { display:none; }
+
+/* ── RESULTS ── */
+.result-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px; padding:40px 36px;
+  text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+  position:relative; overflow:hidden;
+}
+
+.result-card::before {
+  content:'';
+  position:absolute; top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--yellow),var(--pink),var(--purple),var(--cyan));
+}
+
+.result-grade {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:6rem; line-height:1;
+  margin-bottom:4px;
+}
+
+.result-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.8rem; letter-spacing:.05em; margin-bottom:6px;
+}
+
+.result-sub {
+  font-size:.82rem; color:var(--muted); font-weight:600;
+  margin-bottom:32px;
+}
+
+.result-stats {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px;
+}
+
+.r-stat {
+  background:var(--surface); border-radius:14px; padding:16px 8px;
+  border:1px solid var(--border);
+}
+.r-stat .rs-num {
+  font-family:'Bebas Neue',sans-serif; font-size:2rem; line-height:1;
+  margin-bottom:3px;
+}
+.r-stat .rs-label {
+  font-size:.62rem; letter-spacing:.15em; text-transform:uppercase;
+  font-weight:800; color:var(--muted);
+}
+
+/* Review list */
+.review-list {
+  text-align:left; margin-bottom:28px;
+  max-height:220px; overflow-y:auto;
+  scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+}
+
+.review-item {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:10px 12px; border-radius:10px; margin-bottom:6px;
+  font-size:.78rem; font-weight:700; line-height:1.4;
+}
+.review-item.r-correct { background:rgba(66,245,158,0.07); color:rgba(240,238,255,0.8); }
+.review-item.r-wrong   { background:rgba(245,66,114,0.07);  color:rgba(240,238,255,0.8); }
+
+.review-icon { flex-shrink:0; font-size:.9rem; margin-top:1px; }
+.review-answer { font-size:.68rem; color:var(--muted); margin-top:2px; }
+
+.result-actions { display:flex; gap:10px; }
+
+.btn-play-again {
+  flex:1; padding:16px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  border:none; border-radius:14px;
+  font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.08em;
+  color:white; cursor:pointer; transition:all .2s;
+  box-shadow:0 6px 24px rgba(245,66,114,0.3);
+}
+.btn-play-again:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,66,114,0.4); }
+
+.btn-home {
+  padding:16px 24px;
+  background:var(--surface); border:2px solid var(--border);
+  border-radius:14px;
+  font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.08em;
+  color:var(--white); cursor:pointer; transition:all .2s;
+}
+.btn-home:hover { border-color:var(--cyan); color:var(--cyan); }
+
+/* Streaks */
+.streak-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:50px;
+  background:rgba(245,209,66,0.1); border:1px solid rgba(245,209,66,0.3);
+  font-size:.7rem; font-weight:800; color:var(--yellow);
+  letter-spacing:.06em; text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+/* Confetti */
+.confetti-piece {
+  position:fixed; width:8px; height:8px; border-radius:2px;
+  pointer-events:none; z-index:999;
+  animation: confettiFall 2.5s ease-in forwards;
+}
+@keyframes confettiFall {
+  0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+  100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+}
+</style>
+</head>
+<body>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<div class="wrapper">
+
+  <!-- ══ HOME ══ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-card">
+      <div class="logo">QuizBlast</div>
+      <div class="logo-tag">⚡ Test your knowledge</div>
+
+      <div class="category-label">Pick a category</div>
+      <div class="category-grid" id="cat-grid"></div>
+
+      <div class="category-label" style="margin-bottom:10px">Difficulty</div>
+      <div class="diff-grid">
+        <button class="diff-btn easy selected" onclick="selectDiff('easy',this)">😊 Easy</button>
+        <button class="diff-btn medium" onclick="selectDiff('medium',this)">🔥 Medium</button>
+        <button class="diff-btn hard" onclick="selectDiff('hard',this)">💀 Hard</button>
+      </div>
+
+      <button class="btn-start" onclick="startQuiz()">▶ START QUIZ</button>
+    </div>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <div class="score-badge">
+        <span class="s-label">Score</span>
+        <span class="s-num" id="live-score">0</span>
+      </div>
+      <div class="q-progress-wrap">
+        <div class="q-progress-bar">
+          <div class="q-progress-fill" id="q-progress" style="width:0%"></div>
+        </div>
+        <div class="q-counter" id="q-counter">1 / 10</div>
+      </div>
+      <div class="timer-ring">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle class="timer-track" cx="26" cy="26" r="22"/>
+          <circle class="timer-fill" id="timer-fill" cx="26" cy="26" r="22"
+            stroke-dasharray="138.2" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timer-num">15</div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q-card">
+      <div class="q-category" id="q-cat-label"></div>
+      <div class="q-text" id="q-text"></div>
+    </div>
+
+    <div class="feedback-bar" id="feedback-bar"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <button class="btn-next hidden" id="btn-next" onclick="nextQuestion()">Next Question →</button>
+  </div>
+
+  <!-- ══ RESULTS ══ -->
+  <div id="screen-results" class="screen">
+    <div class="result-card">
+      <div class="result-grade" id="result-grade"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div id="streak-wrap"></div>
+
+      <div class="result-stats">
+        <div class="r-stat">
+          <div class="rs-num" id="rs-correct" style="color:var(--green)">0</div>
+          <div class="rs-label">Correct</div>
+        </div>
+        <div class="r-stat">
+          <div class="rs-num" id="rs-wrong" style="color:var(--pink)">0</div>
+          <div class="rs-label">Wrong</div>
+        </div>
+        <div class="r-stat">
+          <div class="rs-num" id="rs-time" style="color:var(--cyan)">0s</div>
+          <div class="rs-label">Avg Time</div>
+        </div>
+      </div>
+
+      <div class="review-list" id="review-list"></div>
+
+      <div class="result-actions">
+        <button class="btn-play-again" onclick="playAgain()">↺ Play Again</button>
+        <button class="btn-home" onclick="goHome()">⌂ Home</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── QUESTION BANK ──
+const QUESTIONS = {
+  science: {
+    icon:'🔬', label:'Science',
+    color:'var(--cyan)',
+    easy: [
+      { q:"What is the chemical symbol for water?", opts:["H2O","CO2","O2","H2S"], a:0 },
+      { q:"How many planets are in our solar system?", opts:["7","8","9","10"], a:1 },
+      { q:"What gas do plants absorb from the atmosphere?", opts:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"], a:2 },
+      { q:"What is the speed of light approximately?", opts:["300,000 km/s","150,000 km/s","500,000 km/s","100,000 km/s"], a:0 },
+      { q:"What is the powerhouse of the cell?", opts:["Nucleus","Mitochondria","Ribosome","Golgi body"], a:1 },
+    ],
+    medium: [
+      { q:"What element has the atomic number 79?", opts:["Silver","Platinum","Gold","Copper"], a:2 },
+      { q:"What is the most abundant gas in Earth's atmosphere?", opts:["Oxygen","Carbon Dioxide","Nitrogen","Argon"], a:2 },
+      { q:"What type of wave is sound?", opts:["Transverse","Electromagnetic","Longitudinal","Surface"], a:2 },
+      { q:"What is the SI unit of electric current?", opts:["Volt","Watt","Ohm","Ampere"], a:3 },
+      { q:"Which planet has the most moons?", opts:["Jupiter","Saturn","Uranus","Neptune"], a:1 },
+    ],
+    hard: [
+      { q:"What is the half-life of Carbon-14?", opts:["1,500 years","5,730 years","10,000 years","3,200 years"], a:1 },
+      { q:"Which subatomic particle has no electric charge?", opts:["Proton","Electron","Neutron","Positron"], a:2 },
+      { q:"What is the Chandrasekhar limit approximately?", opts:["1.4 solar masses","2.0 solar masses","0.8 solar masses","3.0 solar masses"], a:0 },
+      { q:"What phenomenon causes the sky to appear blue?", opts:["Reflection","Refraction","Rayleigh Scattering","Diffraction"], a:2 },
+      { q:"What is the name of the force that holds quarks together?", opts:["Weak force","Gravity","Electromagnetic","Strong nuclear force"], a:3 },
+    ]
+  },
+  history: {
+    icon:'📜', label:'History',
+    color:'var(--orange)',
+    easy: [
+      { q:"In what year did World War II end?", opts:["1943","1944","1945","1946"], a:2 },
+      { q:"Who was the first President of the United States?", opts:["John Adams","Thomas Jefferson","George Washington","Benjamin Franklin"], a:2 },
+      { q:"Where did the Olympic Games originate?", opts:["Rome","Greece","Egypt","Persia"], a:1 },
+      { q:"Which wall famously divided Berlin?", opts:["The Great Wall","The Berlin Wall","The Iron Curtain","The Roman Wall"], a:1 },
+      { q:"Who invented the telephone?", opts:["Thomas Edison","Nikola Tesla","Alexander Graham Bell","Guglielmo Marconi"], a:2 },
+    ],
+    medium: [
+      { q:"In what year did the Titanic sink?", opts:["1910","1911","1912","1913"], a:2 },
+      { q:"Which empire built Machu Picchu?", opts:["Aztec","Maya","Inca","Olmec"], a:2 },
+      { q:"Who wrote the Magna Carta?", opts:["King Henry VIII","Pope Innocent III","Barons forced King John","William the Conqueror"], a:2 },
+      { q:"What year did the French Revolution begin?", opts:["1776","1783","1789","1793"], a:2 },
+      { q:"Which country first used paper money?", opts:["India","Egypt","China","Italy"], a:2 },
+    ],
+    hard: [
+      { q:"What ancient city was known as the 'City of a Hundred Gates'?", opts:["Babylon","Thebes","Carthage","Nineveh"], a:1 },
+      { q:"Which treaty ended World War I?", opts:["Treaty of Paris","Treaty of Versailles","Treaty of Brest-Litovsk","Treaty of London"], a:1 },
+      { q:"Who was the first female Prime Minister of the UK?", opts:["Angela Merkel","Margaret Thatcher","Theresa May","Golda Meir"], a:1 },
+      { q:"In what year was the United Nations founded?", opts:["1944","1945","1946","1947"], a:1 },
+      { q:"Which battle ended Napoleon's rule?", opts:["Battle of Leipzig","Battle of Austerlitz","Battle of Waterloo","Battle of Trafalgar"], a:2 },
+    ]
+  },
+  geography: {
+    icon:'🌍', label:'Geography',
+    color:'var(--green)',
+    easy: [
+      { q:"What is the largest continent by area?", opts:["Africa","North America","Europe","Asia"], a:3 },
+      { q:"What is the capital of France?", opts:["London","Berlin","Paris","Madrid"], a:2 },
+      { q:"Which is the longest river in the world?", opts:["Amazon","Mississippi","Nile","Yangtze"], a:2 },
+      { q:"What ocean is the largest?", opts:["Atlantic","Indian","Arctic","Pacific"], a:3 },
+      { q:"How many continents are on Earth?", opts:["5","6","7","8"], a:2 },
+    ],
+    medium: [
+      { q:"What is the smallest country in the world?", opts:["Monaco","Nauru","San Marino","Vatican City"], a:3 },
+      { q:"Which desert is the largest hot desert?", opts:["Arabian","Gobi","Sahara","Kalahari"], a:2 },
+      { q:"What is the capital of Australia?", opts:["Sydney","Melbourne","Brisbane","Canberra"], a:3 },
+      { q:"Which country has the most natural lakes?", opts:["Russia","USA","Brazil","Canada"], a:3 },
+      { q:"What is the highest mountain in Africa?", opts:["Mt. Kenya","Mt. Kilimanjaro","Mt. Elgon","Mt. Stanley"], a:1 },
+    ],
+    hard: [
+      { q:"What is the deepest lake in the world?", opts:["Caspian Sea","Lake Superior","Lake Baikal","Lake Tanganyika"], a:2 },
+      { q:"Which country contains the most time zones?", opts:["Russia","USA","China","France"], a:3 },
+      { q:"What is the capital of Kazakhstan?", opts:["Almaty","Shymkent","Nur-Sultan (Astana)","Aktobe"], a:2 },
+      { q:"The Mariana Trench is in which ocean?", opts:["Atlantic","Indian","Arctic","Pacific"], a:3 },
+      { q:"Which African country has the largest population?", opts:["Ethiopia","Egypt","DRC","Nigeria"], a:3 },
+    ]
+  },
+  tech: {
+    icon:'💻', label:'Technology',
+    color:'var(--purple)',
+    easy: [
+      { q:"What does 'CPU' stand for?", opts:["Central Processing Unit","Computer Power Unit","Central Program Utility","Core Processing Unit"], a:0 },
+      { q:"What does 'HTML' stand for?", opts:["Hyper Text Markup Language","High Text Machine Language","Hyper Transfer Markup Label","None of these"], a:0 },
+      { q:"Who co-founded Apple?", opts:["Bill Gates","Elon Musk","Steve Jobs","Mark Zuckerberg"], a:2 },
+      { q:"What does 'GPS' stand for?", opts:["Global Positioning System","General Pointing System","Ground Position Sensor","Global Pulse Station"], a:0 },
+      { q:"What does 'URL' stand for?", opts:["Universal Resource Locator","Uniform Resource Locator","Unique Reference Label","Universal Reference Link"], a:1 },
+    ],
+    medium: [
+      { q:"What language is used for styling web pages?", opts:["HTML","JavaScript","CSS","Python"], a:2 },
+      { q:"What does 'RAM' stand for?", opts:["Read Access Memory","Random Access Memory","Rapid Application Module","Read And Modify"], a:1 },
+      { q:"Which company created the Java programming language?", opts:["Microsoft","Apple","Sun Microsystems","IBM"], a:2 },
+      { q:"What year was the first iPhone released?", opts:["2005","2006","2007","2008"], a:2 },
+      { q:"What does 'API' stand for?", opts:["Application Programming Interface","Automated Process Integration","Applied Program Input","Advanced Processing Interface"], a:0 },
+    ],
+    hard: [
+      { q:"What is the time complexity of binary search?", opts:["O(n)","O(n²)","O(log n)","O(1)"], a:2 },
+      { q:"Which protocol is used to send email?", opts:["FTP","HTTP","SMTP","POP3"], a:2 },
+      { q:"What does 'SQL' stand for?", opts:["Structured Query Language","Standard Query Logic","Sequential Queue Layer","Simple Question Language"], a:0 },
+      { q:"What is a 'deadlock' in computing?", opts:["A frozen screen","Two processes blocking each other indefinitely","A virus","A slow processor"], a:1 },
+      { q:"What does 'HTTPS' use for security?", opts:["MD5","SHA-1","TLS/SSL","AES only"], a:2 },
+    ]
+  },
+  movies: {
+    icon:'🎬', label:'Movies',
+    color:'var(--pink)',
+    easy: [
+      { q:"Who played Iron Man in the MCU?", opts:["Chris Evans","Robert Downey Jr.","Chris Hemsworth","Mark Ruffalo"], a:1 },
+      { q:"Which studio made 'Toy Story'?", opts:["DreamWorks","Warner Bros","Pixar","Disney Classic"], a:2 },
+      { q:"In 'The Lion King', what is Simba's father's name?", opts:["Mufasa","Scar","Rafiki","Zazu"], a:0 },
+      { q:"What film features the quote 'I'll be back'?", opts:["RoboCop","Predator","The Terminator","Die Hard"], a:2 },
+      { q:"How many Infinity Stones are there in the MCU?", opts:["4","5","6","7"], a:2 },
+    ],
+    medium: [
+      { q:"Which film won the first Oscar for Best Picture?", opts:["Wings","The Jazz Singer","Sunrise","All Quiet on the Western Front"], a:0 },
+      { q:"Who directed 'Pulp Fiction'?", opts:["Martin Scorsese","Quentin Tarantino","Steven Spielberg","David Lynch"], a:1 },
+      { q:"What is the highest-grossing film of all time (unadjusted)?", opts:["Avengers: Endgame","Titanic","Avatar","Star Wars: TFA"], a:2 },
+      { q:"In which film does the character 'Tyler Durden' appear?", opts:["Seven","The Game","Fight Club","12 Monkeys"], a:2 },
+      { q:"Which actress played Katniss Everdeen?", opts:["Emma Watson","Shailene Woodley","Jennifer Lawrence","Kristen Stewart"], a:2 },
+    ],
+    hard: [
+      { q:"Who composed the score for '2001: A Space Odyssey'?", opts:["John Williams","Richard Strauss (pre-existing)","Hans Zimmer","Bernard Herrmann"], a:1 },
+      { q:"What film has the line: 'You can't handle the truth!'?", opts:["A Few Good Men","The Firm","Philadelphia","JFK"], a:0 },
+      { q:"Which Kubrick film is based on a Stephen King novel?", opts:["Full Metal Jacket","Barry Lyndon","The Shining","Eyes Wide Shut"], a:2 },
+      { q:"'Rashomon' (1950) is directed by which filmmaker?", opts:["Ozu Yasujiro","Kurosawa Akira","Mizoguchi Kenji","Oshima Nagisa"], a:1 },
+      { q:"What year was 'Citizen Kane' released?", opts:["1939","1940","1941","1942"], a:2 },
+    ]
+  },
+  sports: {
+    icon:'⚽', label:'Sports',
+    color:'var(--yellow)',
+    easy: [
+      { q:"How many players are on a standard football (soccer) team?", opts:["9","10","11","12"], a:2 },
+      { q:"In which sport would you perform a slam dunk?", opts:["Volleyball","Basketball","Tennis","Handball"], a:1 },
+      { q:"How many holes are on a standard golf course?", opts:["9","12","16","18"], a:3 },
+      { q:"How long is a marathon in kilometers (approx)?", opts:["40","42.195","44","38"], a:1 },
+      { q:"What sport does Roger Federer play?", opts:["Golf","Squash","Badminton","Tennis"], a:3 },
+    ],
+    medium: [
+      { q:"Which country has won the most FIFA World Cups?", opts:["Germany","Argentina","Italy","Brazil"], a:3 },
+      { q:"What is the maximum score in a single ten-pin bowling game?", opts:["270","280","290","300"], a:3 },
+      { q:"How many Grand Slam tournaments are in tennis?", opts:["2","3","4","5"], a:2 },
+      { q:"Which team has won the most NBA championships?", opts:["Chicago Bulls","LA Lakers","Boston Celtics","Golden State Warriors"], a:2 },
+      { q:"What country did the 2016 Summer Olympics take place in?", opts:["China","UK","Greece","Brazil"], a:3 },
+    ],
+    hard: [
+      { q:"How often are the Summer Olympic Games held?", opts:["Every 2 years","Every 3 years","Every 4 years","Every 5 years"], a:2 },
+      { q:"In cricket, how many balls are in a standard over?", opts:["4","5","6","8"], a:2 },
+      { q:"What is the term for three consecutive strikes in bowling?", opts:["Hat-trick","Triple","Turkey","Tri-strike"], a:2 },
+      { q:"Which country invented the sport of badminton?", opts:["China","India","England","Japan"], a:2 },
+      { q:"How long is an Olympic swimming pool in meters?", opts:["25","40","50","100"], a:2 },
+    ]
+  }
+};
+
+const CATEGORIES = Object.keys(QUESTIONS);
+const LETTERS = ['A','B','C','D'];
+const TIMER_SECS = { easy:20, medium:15, hard:10 };
+const Q_COUNT = 8;
+
+// ── STATE ──
+let selectedCat = 'science';
+let selectedDiff = 'easy';
+let quizQuestions = [];
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let timerInterval = null;
+let timerLeft = 15;
+let startTime = 0;
+let totalTime = 0;
+let userAnswers = [];
+
+// ── INIT ──
+function init() {
+  buildCategoryGrid();
+}
+
+function buildCategoryGrid() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const c = QUESTIONS[cat];
+    return `<button class="cat-chip ${cat===selectedCat?'selected':''}"
+      onclick="selectCat('${cat}',this)">
+      <span class="cat-icon">${c.icon}</span>
+      <span>${c.label}</span>
+    </button>`;
+  }).join('');
+}
+
+function selectCat(cat, el) {
+  selectedCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectDiff(diff, el) {
+  selectedDiff = diff;
+  document.querySelectorAll('.diff-btn').forEach(b => { b.classList.remove('selected','easy','medium','hard'); });
+  el.classList.add('selected', diff);
+}
+
+// ── START ──
+function startQuiz() {
+  const pool = [...QUESTIONS[selectedCat][selectedDiff]];
+  // Shuffle and pick Q_COUNT
+  for (let i = pool.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]] = [pool[j],pool[i]];
+  }
+  quizQuestions = pool.slice(0, Math.min(Q_COUNT, pool.length));
+  currentQ = 0; score = 0; userAnswers = []; totalTime = 0;
+
+  showScreen('quiz');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = quizQuestions[currentQ];
+  const cat = QUESTIONS[selectedCat];
+  const total = quizQuestions.length;
+
+  // Header
+  document.getElementById('live-score').textContent = score;
+  document.getElementById('q-counter').textContent = `${currentQ+1} / ${total}`;
+  document.getElementById('q-progress').style.width = `${(currentQ/total)*100}%`;
+
+  // Card
+  const card = document.getElementById('q-card');
+  card.classList.remove('loaded');
+  document.getElementById('q-cat-label').textContent = cat.icon + ' ' + cat.label;
+  document.getElementById('q-cat-label').style.color = cat.color;
+  document.getElementById('q-text').textContent = q.q;
+  setTimeout(() => card.classList.add('loaded'), 50);
+
+  // Options
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = q.opts.map((opt, i) => `
+    <button class="option-btn" onclick="selectAnswer(${i})" data-idx="${i}">
+      <span class="option-letter">${LETTERS[i]}</span>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+
+  // Feedback
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar'; fb.innerHTML = '';
+
+  // Next btn
+  document.getElementById('btn-next').classList.add('hidden');
+
+  // Timer
+  clearInterval(timerInterval);
+  timerLeft = TIMER_SECS[selectedDiff];
+  startTime = Date.now();
+  updateTimerDisplay();
+  timerInterval = setInterval(tickTimer, 1000);
+}
+
+function tickTimer() {
+  timerLeft--;
+  updateTimerDisplay();
+  if (timerLeft <= 0) {
+    clearInterval(timerInterval);
+    timeOut();
+  }
+}
+
+function updateTimerDisplay() {
+  const total = TIMER_SECS[selectedDiff];
+  const pct = timerLeft / total;
+  const circumference = 138.2;
+  const offset = circumference * (1 - pct);
+
+  const fill = document.getElementById('timer-fill');
+  fill.style.strokeDashoffset = offset;
+  fill.style.stroke = timerLeft <= 3 ? 'var(--pink)' : timerLeft <= 6 ? 'var(--orange)' : 'var(--cyan)';
+  document.getElementById('timer-num').textContent = timerLeft;
+}
+
+function timeOut() {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  const elapsed = (Date.now() - startTime) / 1000;
+  totalTime += elapsed;
+  userAnswers.push({ q: q.q, chosen: -1, correct: q.a, opts: q.opts });
+
+  // Reveal correct
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => { b.disabled = true; if (parseInt(b.dataset.idx)===q.a) b.classList.add('reveal'); });
+
+  showFeedback(false, '⏱ Time\'s up! The correct answer was ' + q.opts[q.a]);
+  document.getElementById('btn-next').classList.remove('hidden');
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const q = quizQuestions[currentQ];
+  const elapsed = (Date.now() - startTime) / 1000;
+  totalTime += elapsed;
+  const isCorrect = idx === q.a;
+
+  userAnswers.push({ q: q.q, chosen: idx, correct: q.a, opts: q.opts, correct_bool: isCorrect });
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    btns[idx].classList.add('correct');
+    const pts = selectedDiff==='easy' ? 10 : selectedDiff==='medium' ? 20 : 30;
+    const timeBonus = Math.max(0, Math.floor((timerLeft / TIMER_SECS[selectedDiff]) * pts * 0.5));
+    score += pts + timeBonus;
+    document.getElementById('live-score').textContent = score;
+    showFeedback(true, `✓ Correct! +${pts} pts${timeBonus > 0 ? ` (+${timeBonus} speed bonus)` : ''}`);
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.a].classList.add('reveal');
+    showFeedback(false, `✗ Wrong! Correct: ${q.opts[q.a]}`);
+  }
+
+  document.getElementById('btn-next').classList.remove('hidden');
+}
+
+function showFeedback(correct, msg) {
+  const fb = document.getElementById('feedback-bar');
+  fb.className = `feedback-bar ${correct ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = msg;
+  // Force reflow
+  void fb.offsetWidth;
+  fb.classList.add('show');
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizQuestions.length) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+// ── RESULTS ──
+function showResults() {
+  clearInterval(timerInterval);
+  const total = quizQuestions.length;
+  const correct = userAnswers.filter(a => a.correct_bool).length;
+  const wrong = total - correct;
+  const pct = Math.round((correct / total) * 100);
+  const avgTime = totalTime > 0 ? (totalTime / total).toFixed(1) : 0;
+
+  // Grade
+  let grade, title, sub, gradeColor;
+  if (pct >= 90) { grade='S'; title='LEGENDARY!'; sub='Absolutely flawless. You\'re a genius!'; gradeColor='var(--yellow)'; }
+  else if (pct >= 75) { grade='A'; title='EXCELLENT!'; sub='Outstanding performance. Well done!'; gradeColor='var(--green)'; }
+  else if (pct >= 60) { grade='B'; title='GREAT JOB!'; sub='Solid performance. Keep it up!'; gradeColor='var(--cyan)'; }
+  else if (pct >= 45) { grade='C'; title='GOOD TRY!'; sub='Not bad, but there\'s room to improve.'; gradeColor='var(--orange)'; }
+  else if (pct >= 30) { grade='D'; title='KEEP GOING!'; sub='Practice makes perfect. Try again!'; gradeColor='var(--pink)'; }
+  else { grade='F'; title='BETTER LUCK!'; sub='Don\'t give up. Study hard and retry!'; gradeColor='var(--muted)'; }
+
+  document.getElementById('result-grade').textContent = grade;
+  document.getElementById('result-grade').style.color = gradeColor;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  document.getElementById('rs-correct').textContent = correct;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-time').textContent = avgTime + 's';
+
+  // Streak
+  let maxStreak = 0, streak = 0;
+  userAnswers.forEach(a => { if (a.correct_bool) { streak++; maxStreak = Math.max(maxStreak,streak); } else streak=0; });
+  const sw = document.getElementById('streak-wrap');
+  sw.innerHTML = maxStreak >= 3
+    ? `<div class="streak-badge">🔥 Best Streak: ${maxStreak} in a row!</div>`
+    : '';
+
+  // Review
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = userAnswers.map((a, i) => `
+    <div class="review-item ${a.correct_bool ? 'r-correct' : 'r-wrong'}">
+      <span class="review-icon">${a.correct_bool ? '✓' : '✗'}</span>
+      <div>
+        <div>Q${i+1}: ${a.q}</div>
+        ${!a.correct_bool ? `<div class="review-answer">Correct: ${a.opts[a.correct]}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  showScreen('results');
+  if (pct >= 75) launchConfetti();
+}
+
+// ── CONFETTI ──
+function launchConfetti() {
+  const colors = ['var(--yellow)','var(--pink)','var(--cyan)','var(--green)','var(--purple)','var(--orange)'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.cssText = `
+        left:${Math.random()*100}vw;
+        top:-10px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        transform:rotate(${Math.random()*360}deg);
+        animation-duration:${1.5+Math.random()*2}s;
+        animation-delay:${Math.random()*0.5}s;
+        width:${6+Math.random()*8}px;
+        height:${6+Math.random()*8}px;
+        border-radius:${Math.random()>0.5?'50%':'2px'};
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// ── NAVIGATION ──
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function playAgain() {
+  startQuiz();
+}
+
+function goHome() {
+  clearInterval(timerInterval);
+  buildCategoryGrid();
+  showScreen('home');
+}
+
+// ── START ──
+init();
+</script>
+</body>
+</html>

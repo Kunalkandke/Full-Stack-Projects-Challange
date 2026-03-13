@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TASKS — Do It.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap');
+
+:root {
+  --cream: #f5f0e8;
+  --ink: #1a1714;
+  --rust: #c94a2b;
+  --sage: #5a7a5c;
+  --gold: #c8a84b;
+  --paper: #ede8df;
+  --shadow: rgba(26,23,20,0.12);
+  --muted: #8a7f74;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--cream);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Paper texture background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(26,23,20,0.04) 27px, rgba(26,23,20,0.04) 28px),
+    repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(26,23,20,0.02) 27px, rgba(26,23,20,0.02) 28px);
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 20%, rgba(200,168,75,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(201,74,43,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; width: 100%; animation: fadeUp 0.4s ease; }
+.screen.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LOGIN ── */
+#login-screen {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--paper);
+  border: 1px solid rgba(26,23,20,0.15);
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 48px 44px;
+  position: relative;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px;
+  right: 4px; bottom: 4px;
+  border: 1px solid rgba(26,23,20,0.08);
+  pointer-events: none;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.brand-icon {
+  width: 48px; height: 48px;
+  background: var(--ink);
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  color: var(--cream);
+  transform: rotate(-3deg);
+}
+
+.brand h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.brand p {
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 28px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: var(--ink);
+  border-bottom-color: var(--rust);
+  font-weight: 500;
+}
+
+/* Forms */
+.form-group { margin-bottom: 18px; }
+
+label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--cream);
+  border: 1.5px solid rgba(26,23,20,0.2);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.88rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--rust);
+  box-shadow: 3px 3px 0 rgba(201,74,43,0.15);
+}
+
+.error-msg {
+  color: var(--rust);
+  font-size: 0.72rem;
+  margin-top: -10px;
+  margin-bottom: 14px;
+  display: none;
+}
+
+.error-msg.show { display: block; }
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: var(--ink);
+  color: var(--cream);
+  border: 2px solid var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+}
+
+.btn-primary:hover {
+  background: var(--rust);
+  border-color: var(--rust);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.btn-primary:active { transform: translate(0,0); box-shadow: none; }
+
+/* ── TODO APP ── */
+#app-screen {
+  max-width: 580px;
+  margin: auto;
+  padding: 20px;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.app-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.app-title span {
+  display: block;
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.header-right { text-align: right; }
+
+.user-badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.user-badge strong { color: var(--ink); }
+
+.btn-logout {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 24px;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.stat {
+  flex: 1;
+  background: var(--paper);
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.stat-num.done { color: var(--sage); }
+.stat-num.pending { color: var(--rust); }
+
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Add task */
+.add-box {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.add-input {
+  flex: 1;
+  padding: 13px 16px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-right: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.88rem;
+  color: var(--ink);
+  outline: none;
+}
+
+.add-input::placeholder { color: var(--muted); }
+
+.add-input:focus { background: var(--cream); }
+
+.add-select {
+  padding: 13px 10px;
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  border-right: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-add {
+  padding: 13px 20px;
+  background: var(--rust);
+  border: 1.5px solid var(--ink);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add:hover { background: var(--ink); }
+
+/* Filters */
+.filter-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid rgba(26,23,20,0.2);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+}
+
+.filter-btn:hover:not(.active) {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.clear-done {
+  margin-left: auto;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1.5px solid rgba(201,74,43,0.3);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rust);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clear-done:hover { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+
+/* Task list */
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 1.5px solid rgba(26,23,20,0.12);
+  border-left: 4px solid var(--ink);
+  transition: all 0.2s;
+  animation: slideIn 0.25s ease;
+  position: relative;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.task-item:hover { box-shadow: 4px 4px 0 var(--shadow); transform: translateX(-2px); }
+
+.task-item.done {
+  border-left-color: var(--sage);
+  opacity: 0.65;
+}
+
+.task-item.priority-high { border-left-color: var(--rust); }
+.task-item.priority-medium { border-left-color: var(--gold); }
+.task-item.priority-low { border-left-color: var(--sage); }
+
+.task-item.done .task-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.task-check {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(26,23,20,0.3);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  font-size: 12px;
+  color: var(--sage);
+}
+
+.task-check:hover { border-color: var(--sage); }
+.task-item.done .task-check { background: var(--sage); border-color: var(--sage); color: white; }
+
+.task-content { flex: 1; min-width: 0; }
+
+.task-text {
+  font-size: 0.88rem;
+  color: var(--ink);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.task-meta {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+}
+
+.priority-tag {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.priority-tag.high { color: var(--rust); border-color: rgba(201,74,43,0.35); }
+.priority-tag.medium { color: var(--gold); border-color: rgba(200,168,75,0.35); }
+.priority-tag.low { color: var(--sage); border-color: rgba(90,122,92,0.35); }
+
+.btn-delete {
+  width: 26px; height: 26px;
+  background: transparent;
+  border: 1.5px solid rgba(26,23,20,0.15);
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.task-item:hover .btn-delete { opacity: 1; }
+.btn-delete:hover { background: var(--rust); border-color: var(--rust); color: white; }
+
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+}
+
+.empty-icon { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+.empty-state p { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Progress bar */
+.progress-wrap { margin-bottom: 20px; }
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 5px;
+  background: rgba(26,23,20,0.1);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--sage);
+  transition: width 0.4s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: rgba(255,255,255,0.5);
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen active">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-icon">✎</div>
+      <h1>Do It.</h1>
+      <p>Your tasks, your rules</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="your username" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <div class="error-msg" id="login-error">Invalid username or password.</div>
+      <button class="btn-primary" onclick="doLogin()">Sign In →</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="reg-user" placeholder="choose a username" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="min 4 characters">
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="reg-pass2" placeholder="repeat password">
+      </div>
+      <div class="error-msg" id="reg-error">Passwords do not match.</div>
+      <button class="btn-primary" onclick="doRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="app-screen" class="screen">
+  <div class="app-header">
+    <div class="app-title">
+      <span>Your workspace</span>
+      My Tasks
+    </div>
+    <div class="header-right">
+      <div class="user-badge">Hello, <strong id="username-display">—</strong></div>
+      <button class="btn-logout" onclick="doLogout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-num done" id="stat-done">0</div><div class="stat-label">Done</div></div>
+    <div class="stat"><div class="stat-num pending" id="stat-pending">0</div><div class="stat-label">Pending</div></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Progress</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Add Task -->
+  <div class="add-box">
+    <input class="add-input" type="text" id="task-input" placeholder="What needs to be done?" maxlength="120">
+    <select class="add-select" id="priority-select">
+      <option value="medium">◆ Med</option>
+      <option value="high">▲ High</option>
+      <option value="low">▼ Low</option>
+    </select>
+    <button class="btn-add" onclick="addTask()" title="Add task">+</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+    <button class="filter-btn" onclick="setFilter('done', this)">Done</button>
+    <button class="clear-done" onclick="clearDone()">Clear Done</button>
+  </div>
+
+  <!-- Tasks -->
+  <div class="task-list" id="task-list"></div>
+</div>
+
+<script>
+// ── DATA ──
+let currentUser = null;
+let currentFilter = 'all';
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem('doit_users') || '{}');
+}
+
+function saveUsers(u) {
+  localStorage.setItem('doit_users', JSON.stringify(u));
+}
+
+function getTasks() {
+  const all = JSON.parse(localStorage.getItem('doit_tasks') || '{}');
+  return all[currentUser] || [];
+}
+
+function saveTasks(tasks) {
+  const all = JSON.parse(localStorage.getItem('doit_tasks') || '{}');
+  all[currentUser] = tasks;
+  localStorage.setItem('doit_tasks', JSON.stringify(all));
+}
+
+// ── AUTH ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0) === (tab==='login')));
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('reg-error').classList.remove('show');
+}
+
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const users = getUsers();
+  if (!user || !pass || users[user] !== pass) {
+    document.getElementById('login-error').classList.add('show');
+    document.getElementById('login-pass').value = '';
+    return;
+  }
+  currentUser = user;
+  document.getElementById('login-error').classList.remove('show');
+  showApp();
+}
+
+function doRegister() {
+  const user = document.getElementById('reg-user').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const errEl = document.getElementById('reg-error');
+
+  if (!user || user.length < 2) { errEl.textContent = 'Username must be at least 2 characters.'; errEl.classList.add('show'); return; }
+  if (pass.length < 4) { errEl.textContent = 'Password must be at least 4 characters.'; errEl.classList.add('show'); return; }
+  if (pass !== pass2) { errEl.textContent = 'Passwords do not match.'; errEl.classList.add('show'); return; }
+
+  const users = getUsers();
+  if (users[user]) { errEl.textContent = 'Username already taken.'; errEl.classList.add('show'); return; }
+
+  users[user] = pass;
+  saveUsers(users);
+  errEl.classList.remove('show');
+  currentUser = user;
+  showApp();
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('task-input').value = '';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  showScreen('login-screen');
+  switchTab('login');
+}
+
+// ── SCREENS ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showApp() {
+  document.getElementById('username-display').textContent = currentUser;
+  currentFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  showScreen('app-screen');
+  renderTasks();
+}
+
+// ── TASKS ──
+function addTask() {
+  const input = document.getElementById('task-input');
+  const text = input.value.trim();
+  if (!text) { input.focus(); return; }
+
+  const priority = document.getElementById('priority-select').value;
+  const tasks = getTasks();
+  tasks.unshift({
+    id: Date.now(),
+    text,
+    priority,
+    done: false,
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  });
+  saveTasks(tasks);
+  input.value = '';
+  input.focus();
+  renderTasks();
+}
+
+function toggleTask(id) {
+  const tasks = getTasks();
+  const t = tasks.find(t => t.id === id);
+  if (t) t.done = !t.done;
+  saveTasks(tasks);
+  renderTasks();
+}
+
+function deleteTask(id) {
+  const tasks = getTasks().filter(t => t.id !== id);
+  saveTasks(tasks);
+  renderTasks();
+}
+
+function clearDone() {
+  saveTasks(getTasks().filter(t => !t.done));
+  renderTasks();
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+
+function renderTasks() {
+  const all = getTasks();
+  const total = all.length;
+  const done = all.filter(t => t.done).length;
+  const pending = total - done;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  let tasks = [...all];
+  if (currentFilter === 'pending') tasks = tasks.filter(t => !t.done);
+  if (currentFilter === 'done') tasks = tasks.filter(t => t.done);
+
+  const list = document.getElementById('task-list');
+
+  if (tasks.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">${currentFilter === 'done' ? '✓' : '✎'}</div>
+      <p>${currentFilter === 'done' ? 'No completed tasks' : currentFilter === 'pending' ? 'All caught up!' : 'Add your first task'}</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = tasks.map(t => `
+    <div class="task-item ${t.done ? 'done' : ''} priority-${t.priority}" data-id="${t.id}">
+      <div class="task-check" onclick="toggleTask(${t.id})">${t.done ? '✓' : ''}</div>
+      <div class="task-content">
+        <div class="task-text">${escHtml(t.text)}</div>
+        <div class="task-meta">${t.date}</div>
+      </div>
+      <span class="priority-tag ${t.priority}">${t.priority}</span>
+      <button class="btn-delete" onclick="deleteTask(${t.id})" title="Delete">✕</button>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('app-screen').classList.contains('active')) addTask();
+    else if (document.getElementById('login-form').style.display !== 'none') doLogin();
+    else doRegister();
+  }
+});
+
+// Seed demo user
+const users = getUsers();
+if (!users['demo']) { users['demo'] = 'demo123'; saveUsers(users); }
+</script>
+</body>
+</html>
