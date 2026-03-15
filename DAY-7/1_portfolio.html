@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Alex Ray</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --cream: #f5f0e8;
+    --gold: #c8a84b;
+    --rust: #b94a2c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    border-bottom: 1px solid rgba(26,18,8,0.12);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+  }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  nav a:hover { opacity: 1; }
+
+  .hero {
+    padding: 6rem 4rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    min-height: 80vh;
+  }
+  .hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+  }
+  .hero-text h1 em {
+    color: var(--rust);
+    font-style: italic;
+  }
+  .hero-text p {
+    font-size: 0.8rem;
+    line-height: 1.8;
+    opacity: 0.6;
+    max-width: 380px;
+    margin-bottom: 3rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.9rem 2.5rem;
+    background: var(--ink);
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn:hover { background: var(--rust); }
+
+  .hero-img {
+    position: relative;
+    height: 500px;
+  }
+  .hero-img .frame {
+    position: absolute;
+    width: 320px;
+    height: 420px;
+    background: linear-gradient(135deg, #d4b896, #c8a26a);
+    bottom: 0; right: 60px;
+    border: 3px solid var(--gold);
+  }
+  .hero-img .label {
+    position: absolute;
+    bottom: -2rem;
+    right: 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+  .floating-tag {
+    position: absolute;
+    top: 60px; left: 0;
+    background: var(--rust);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .works {
+    padding: 6rem 4rem;
+    border-top: 1px solid rgba(26,18,8,0.12);
+  }
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 3rem;
+  }
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .work-item {
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .work-item .bg {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.4s ease;
+  }
+  .work-item:hover .bg { transform: scale(1.05); }
+  .work-item:nth-child(1) .bg { background: linear-gradient(135deg, #2d1b00, #6b3a1f); }
+  .work-item:nth-child(2) .bg { background: linear-gradient(135deg, #0d2233, #1a4a6b); }
+  .work-item:nth-child(3) .bg { background: linear-gradient(135deg, #1a0d00, #4a2c0d); }
+  .work-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .work-item:hover .work-info { opacity: 1; transform: translateY(0); }
+  .work-info h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+  .work-info span { font-size: 0.65rem; letter-spacing: 0.1em; opacity: 0.7; text-transform: uppercase; }
+
+  .work-num {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  footer {
+    padding: 3rem 4rem;
+    border-top: 1px solid rgba(26,18,8,0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    letter-spacing: 0.08em;
+  }
+
+  /* Animations */
+  .hero-text h1, .hero-text p, .hero-text .btn {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: reveal 0.8s forwards;
+  }
+  .hero-text p { animation-delay: 0.15s; }
+  .hero-text .btn { animation-delay: 0.3s; }
+  @keyframes reveal { to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Alex Ray</div>
+  <ul>
+    <li><a href="#">Work</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Studio</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <h1>Creative<br><em>Digital</em><br>Designer</h1>
+    <p>Crafting intentional digital experiences for brands that want to be remembered. Based in Mumbai, working globally.</p>
+    <a href="#" class="btn">View Selected Work</a>
+  </div>
+  <div class="hero-img">
+    <div class="floating-tag">Available for projects</div>
+    <div class="frame"></div>
+    <div class="label">© 2026 Alex Ray Studio</div>
+  </div>
+</section>
+
+<section class="works">
+  <div class="section-label">Selected Works — 2024/26</div>
+  <div class="works-grid">
+    <div class="work-item">
+      <div class="bg"></div>
+      <div class="work-num">001</div>
+      <div class="work-info">
+        <span>Brand Identity</span>
+        <h3>Aurum Coffee</h3>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="bg"></div>
+      <div class="work-num">002</div>
+      <div class="work-info">
+        <span>Web Design</span>
+        <h3>Drift Architecture</h3>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="bg"></div>
+      <div class="work-num">003</div>
+      <div class="work-info">
+        <span>Motion</span>
+        <h3>Velour Editorial</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Alex Ray — Creative Director</span>
+  <span>Mumbai, India</span>
+  <span>alex@raydesign.co</span>
+</footer>
+</body>
+</html>

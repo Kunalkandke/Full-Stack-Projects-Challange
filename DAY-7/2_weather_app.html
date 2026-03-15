@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    font-family: 'Syne', sans-serif;
+    background: #0b0f1a;
+    color: #e8eaf6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .app {
+    width: 380px;
+    padding: 2.5rem;
+    background: linear-gradient(145deg, #131929, #0d1320);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    position: relative;
+    overflow: hidden;
+  }
+  .app::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(99,179,237,0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .search {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .search input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    color: #e8eaf6;
+    font-family: 'Syne Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search input::placeholder { opacity: 0.3; }
+  .search input:focus { border-color: rgba(99,179,237,0.4); }
+  .search button {
+    background: #3b82f6;
+    border: none;
+    border-radius: 12px;
+    width: 44px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .search button:hover { background: #2563eb; }
+  .search button:active { transform: scale(0.95); }
+
+  .location {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 0.3rem;
+    font-family: 'Syne Mono', monospace;
+  }
+  .city-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+  }
+
+  .weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .temp {
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #e8eaf6, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .temp sup { font-size: 2rem; vertical-align: super; }
+  .weather-icon {
+    font-size: 5rem;
+    filter: drop-shadow(0 0 20px rgba(99,179,237,0.4));
+    animation: bobble 4s ease-in-out infinite;
+  }
+  @keyframes bobble { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .condition {
+    font-size: 0.85rem;
+    opacity: 0.5;
+    margin-bottom: 2.5rem;
+    font-family: 'Syne Mono', monospace;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+  }
+  .stat-box .s-icon { font-size: 1.2rem; margin-bottom: 0.4rem; }
+  .stat-box .s-val {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .stat-box .s-label {
+    font-size: 0.6rem;
+    opacity: 0.35;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Syne Mono', monospace;
+  }
+
+  .forecast {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .day {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .day:hover, .day.active {
+    background: rgba(59,130,246,0.12);
+    border-color: rgba(59,130,246,0.3);
+  }
+  .day .d-name {
+    font-size: 0.6rem;
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    font-family: 'Syne Mono', monospace;
+  }
+  .day .d-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+  .day .d-temp { font-size: 0.85rem; font-weight: 700; }
+
+  /* Weather condition colors */
+  .sunny::before { background: radial-gradient(circle, rgba(251,191,36,0.12), transparent 70%); }
+  .rainy::before { background: radial-gradient(circle, rgba(99,179,237,0.18), transparent 70%); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="search">
+    <input type="text" id="cityInput" placeholder="Search city..." value="Mumbai">
+    <button onclick="fetchWeather()">🔍</button>
+  </div>
+
+  <div class="location" id="locationLabel">India</div>
+  <div class="city-name" id="cityDisplay">Mumbai</div>
+
+  <div class="weather-main">
+    <div>
+      <div class="temp" id="tempDisplay">28<sup>°C</sup></div>
+      <div class="condition" id="conditionDisplay">Partly Cloudy</div>
+    </div>
+    <div class="weather-icon" id="weatherIcon">⛅</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="s-icon">💧</div>
+      <div class="s-val" id="humidity">72%</div>
+      <div class="s-label">Humidity</div>
+    </div>
+    <div class="stat-box">
+      <div class="s-icon">💨</div>
+      <div class="s-val" id="wind">18 km/h</div>
+      <div class="s-label">Wind</div>
+    </div>
+    <div class="stat-box">
+      <div class="s-icon">👁</div>
+      <div class="s-val" id="visibility">8 km</div>
+      <div class="s-label">Visibility</div>
+    </div>
+  </div>
+
+  <div class="forecast" id="forecast">
+    <div class="day active"><div class="d-name">Today</div><div class="d-icon">⛅</div><div class="d-temp">28°</div></div>
+    <div class="day"><div class="d-name">Tue</div><div class="d-icon">☀️</div><div class="d-temp">31°</div></div>
+    <div class="day"><div class="d-name">Wed</div><div class="d-icon">🌧</div><div class="d-temp">24°</div></div>
+    <div class="day"><div class="d-name">Thu</div><div class="d-icon">⛈</div><div class="d-temp">22°</div></div>
+    <div class="day"><div class="d-name">Fri</div><div class="d-icon">☀️</div><div class="d-temp">30°</div></div>
+  </div>
+</div>
+
+<script>
+const cities = {
+  mumbai: { country: 'India', temp: 28, condition: 'Partly Cloudy', icon: '⛅', humidity: '72%', wind: '18 km/h', visibility: '8 km', forecast: [{d:'Today',i:'⛅',t:'28°'},{d:'Tue',i:'☀️',t:'31°'},{d:'Wed',i:'🌧',t:'24°'},{d:'Thu',i:'⛈',t:'22°'},{d:'Fri',i:'☀️',t:'30°'}] },
+  delhi: { country: 'India', temp: 35, condition: 'Clear & Sunny', icon: '☀️', humidity: '45%', wind: '12 km/h', visibility: '10 km', forecast: [{d:'Today',i:'☀️',t:'35°'},{d:'Tue',i:'☀️',t:'36°'},{d:'Wed',i:'🌤',t:'33°'},{d:'Thu',i:'☀️',t:'37°'},{d:'Fri',i:'⛅',t:'32°'}] },
+  london: { country: 'UK', temp: 12, condition: 'Overcast', icon: '🌥', humidity: '85%', wind: '22 km/h', visibility: '5 km', forecast: [{d:'Today',i:'🌥',t:'12°'},{d:'Tue',i:'🌧',t:'10°'},{d:'Wed',i:'🌧',t:'9°'},{d:'Thu',i:'⛅',t:'13°'},{d:'Fri',i:'🌥',t:'11°'}] },
+  tokyo: { country: 'Japan', temp: 18, condition: 'Light Rain', icon: '🌦', humidity: '78%', wind: '15 km/h', visibility: '7 km', forecast: [{d:'Today',i:'🌦',t:'18°'},{d:'Tue',i:'⛅',t:'20°'},{d:'Wed',i:'☀️',t:'22°'},{d:'Thu',i:'☀️',t:'23°'},{d:'Fri',i:'🌤',t:'19°'}] },
+  'new york': { country: 'USA', temp: 8, condition: 'Snow Flurries', icon: '🌨', humidity: '65%', wind: '28 km/h', visibility: '4 km', forecast: [{d:'Today',i:'🌨',t:'8°'},{d:'Tue',i:'❄️',t:'5°'},{d:'Wed',i:'⛅',t:'10°'},{d:'Thu',i:'☀️',t:'14°'},{d:'Fri',i:'🌤',t:'12°'}] }
+};
+
+function fetchWeather() {
+  const query = document.getElementById('cityInput').value.toLowerCase().trim();
+  const data = cities[query] || cities[Object.keys(cities).find(k => k.includes(query))] || null;
+
+  if (!data) {
+    document.getElementById('conditionDisplay').textContent = 'City not found. Try: Mumbai, Delhi, London, Tokyo, New York';
+    return;
+  }
+
+  const cityName = query.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+  document.getElementById('cityDisplay').textContent = cityName;
+  document.getElementById('locationLabel').textContent = data.country;
+  document.getElementById('tempDisplay').innerHTML = data.temp + '<sup>°C</sup>';
+  document.getElementById('conditionDisplay').textContent = data.condition;
+  document.getElementById('weatherIcon').textContent = data.icon;
+  document.getElementById('humidity').textContent = data.humidity;
+  document.getElementById('wind').textContent = data.wind;
+  document.getElementById('visibility').textContent = data.visibility;
+
+  const fc = document.getElementById('forecast');
+  fc.innerHTML = data.forecast.map((f, i) =>
+    `<div class="day ${i===0?'active':''}" onclick="selectDay(this)">
+      <div class="d-name">${f.d}</div>
+      <div class="d-icon">${f.i}</div>
+      <div class="d-temp">${f.t}</div>
+    </div>`
+  ).join('');
+}
+
+function selectDay(el) {
+  document.querySelectorAll('.day').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+}
+
+document.getElementById('cityInput').addEventListener('keypress', e => { if(e.key === 'Enter') fetchWeather(); });
+</script>
+</body>
+</html>
