@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Card</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="badge" id="badge">NEW</div>
+      <button class="wishlist-btn" id="wishlistBtn" title="Add to wishlist">&#9825;</button>
+      <div class="image-wrapper">
+        <img
+          class="product-img"
+          id="productImg"
+          src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80"
+          alt="Premium Watch"
+        />
+      </div>
+      <div class="card-body">
+        <span class="category">Accessories</span>
+        <h2 class="product-name">Minimalist Watch</h2>
+        <div class="rating" id="ratingStars">
+          <span class="star filled">&#9733;</span>
+          <span class="star filled">&#9733;</span>
+          <span class="star filled">&#9733;</span>
+          <span class="star filled">&#9733;</span>
+          <span class="star">&#9733;</span>
+          <span class="review-count">(128 reviews)</span>
+        </div>
+        <div class="price-row">
+          <span class="price" id="price">$129.99</span>
+          <span class="old-price" id="oldPrice">$179.99</span>
+          <span class="discount" id="discount">-28%</span>
+        </div>
+        <div class="color-picker">
+          <span class="color-label">Color:</span>
+          <button class="color-dot active" style="background:#1e293b" data-color="Black" title="Black"></button>
+          <button class="color-dot" style="background:#c0a060" data-color="Gold" title="Gold"></button>
+          <button class="color-dot" style="background:#b0b8c8" data-color="Silver" title="Silver"></button>
+        </div>
+        <button class="add-to-cart" id="cartBtn">
+          <span id="cartBtnText">Add to Cart</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

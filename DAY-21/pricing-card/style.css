@@ -1,0 +1,256 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 40px 20px;
+}
+
+.page-wrapper {
+  text-align: center;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+}
+
+.page-sub {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 28px;
+}
+
+/* Billing Toggle */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.save-badge {
+  background: #22c55e;
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #334155;
+  border-radius: 26px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+input:checked + .slider { background: #6366f1; }
+input:checked + .slider::before { transform: translateX(24px); }
+
+/* Cards */
+.cards-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 32px 28px;
+  width: 280px;
+  text-align: left;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.card.popular {
+  background: linear-gradient(145deg, #312e81, #4338ca);
+  border-color: #6366f1;
+  transform: scale(1.04);
+  box-shadow: 0 20px 60px rgba(99,102,241,0.35);
+}
+
+.card.popular:hover {
+  transform: scale(1.04) translateY(-8px);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.plan-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.plan-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-bottom: 6px;
+}
+
+.plan-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.price-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+
+.currency {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-top: 6px;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #f1f5f9;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.period {
+  font-size: 0.85rem;
+  color: #64748b;
+  align-self: flex-end;
+  margin-bottom: 6px;
+}
+
+.features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.features li {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.included {
+  color: #e2e8f0;
+}
+
+.excluded {
+  color: #475569;
+}
+
+.plan-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.starter-btn {
+  background: rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.starter-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.pro-btn {
+  background: #fff;
+  color: #4338ca;
+}
+
+.pro-btn:hover {
+  background: #f1f5f9;
+  transform: scale(1.02);
+}
+
+.enterprise-btn {
+  background: rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.enterprise-btn:hover {
+  background: rgba(255,255,255,0.15);
+}

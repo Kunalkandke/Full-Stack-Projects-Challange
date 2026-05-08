@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recipe Card</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="image-wrapper">
+        <img
+          class="recipe-img"
+          id="recipeImg"
+          src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80"
+          alt="Recipe"
+        />
+        <div class="image-overlay">
+          <span class="cuisine-tag" id="cuisineTag">Italian</span>
+        </div>
+        <button class="save-btn" id="saveBtn" title="Save recipe">&#9825;</button>
+      </div>
+
+      <div class="card-body">
+        <div class="meta-row">
+          <span class="difficulty easy" id="difficulty">Easy</span>
+          <div class="rating-mini">
+            <span>&#9733;</span>
+            <span id="ratingVal">4.8</span>
+          </div>
+        </div>
+
+        <h2 class="recipe-name" id="recipeName">Avocado Toast Delight</h2>
+        <p class="recipe-desc" id="recipeDesc">
+          A fresh and vibrant breakfast bowl packed with healthy fats, crispy sourdough, and a perfectly poached egg.
+        </p>
+
+        <div class="info-strip">
+          <div class="info-item">
+            <span class="info-icon">&#9201;</span>
+            <span class="info-value" id="prepTime">10 min</span>
+            <span class="info-label">Prep</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">&#128293;</span>
+            <span class="info-value" id="cookTime">5 min</span>
+            <span class="info-label">Cook</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">&#128101;</span>
+            <span class="info-value" id="servings">2</span>
+            <span class="info-label">Servings</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">&#128293;</span>
+            <span class="info-value" id="calories">320</span>
+            <span class="info-label">Kcal</span>
+          </div>
+        </div>
+
+        <div class="ingredients-section">
+          <h3 class="section-title">Ingredients</h3>
+          <ul class="ingredients-list" id="ingredientsList">
+            <li><span class="check-box" data-checked="false">&#9744;</span> 2 slices sourdough bread</li>
+            <li><span class="check-box" data-checked="false">&#9744;</span> 1 ripe avocado</li>
+            <li><span class="check-box" data-checked="false">&#9744;</span> 2 eggs</li>
+            <li><span class="check-box" data-checked="false">&#9744;</span> Cherry tomatoes</li>
+            <li><span class="check-box" data-checked="false">&#9744;</span> Red pepper flakes</li>
+          </ul>
+        </div>
+
+        <div class="servings-control">
+          <span class="servings-label">Servings:</span>
+          <button class="srv-btn" id="decreaseBtn">&#8722;</button>
+          <span class="srv-count" id="srvCount">2</span>
+          <button class="srv-btn" id="increaseBtn">&#43;</button>
+        </div>
+
+        <button class="cook-btn" id="cookBtn">Start Cooking &#127859;</button>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Card</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card" id="profileCard">
+      <div class="card-cover"></div>
+      <div class="avatar-wrapper">
+        <img class="avatar" id="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" />
+        <span class="status-dot" id="statusDot"></span>
+      </div>
+      <div class="card-body">
+        <h2 class="name" id="userName">Alex Johnson</h2>
+        <p class="role" id="userRole">Senior UI Designer</p>
+        <p class="bio" id="userBio">Crafting beautiful digital experiences with passion and precision. Open to new opportunities.</p>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-value" id="posts">128</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="followers">4.2k</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="following">312</span>
+            <span class="stat-label">Following</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="followBtn">Follow</button>
+          <button class="btn btn-secondary" id="msgBtn">Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pricing Card</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+    <h1 class="page-title">Choose Your Plan</h1>
+    <p class="page-sub">Start free, scale as you grow. No hidden fees.</p>
+
+    <div class="toggle-wrap">
+      <span class="toggle-label" id="monthlyLabel">Monthly</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="billingToggle" />
+        <span class="slider"></span>
+      </label>
+      <span class="toggle-label" id="annualLabel">Annual <span class="save-badge">Save 20%</span></span>
+    </div>
+
+    <div class="cards-container">
+
+      <!-- Starter -->
+      <div class="card" id="starterCard">
+        <div class="plan-icon">&#127807;</div>
+        <h2 class="plan-name">Starter</h2>
+        <p class="plan-desc">Perfect for individuals and small projects.</p>
+        <div class="price-block">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="0" data-annual="0">0</span>
+          <span class="period">/mo</span>
+        </div>
+        <ul class="features">
+          <li class="included">&#10003; 3 Projects</li>
+          <li class="included">&#10003; 5 GB Storage</li>
+          <li class="included">&#10003; Basic Analytics</li>
+          <li class="excluded">&#10007; Priority Support</li>
+          <li class="excluded">&#10007; Custom Domain</li>
+          <li class="excluded">&#10007; Team Collaboration</li>
+        </ul>
+        <button class="plan-btn starter-btn">Get Started Free</button>
+      </div>
+
+      <!-- Pro (Popular) -->
+      <div class="card popular" id="proCard">
+        <div class="popular-badge">Most Popular</div>
+        <div class="plan-icon">&#9889;</div>
+        <h2 class="plan-name">Pro</h2>
+        <p class="plan-desc">For growing teams and professional use.</p>
+        <div class="price-block">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="29" data-annual="23">29</span>
+          <span class="period">/mo</span>
+        </div>
+        <ul class="features">
+          <li class="included">&#10003; Unlimited Projects</li>
+          <li class="included">&#10003; 50 GB Storage</li>
+          <li class="included">&#10003; Advanced Analytics</li>
+          <li class="included">&#10003; Priority Support</li>
+          <li class="included">&#10003; Custom Domain</li>
+          <li class="excluded">&#10007; Team Collaboration</li>
+        </ul>
+        <button class="plan-btn pro-btn">Start Pro Trial</button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="card" id="enterpriseCard">
+        <div class="plan-icon">&#127963;</div>
+        <h2 class="plan-name">Enterprise</h2>
+        <p class="plan-desc">For large teams with advanced needs.</p>
+        <div class="price-block">
+          <span class="currency">$</span>
+          <span class="price" data-monthly="79" data-annual="63">79</span>
+          <span class="period">/mo</span>
+        </div>
+        <ul class="features">
+          <li class="included">&#10003; Unlimited Projects</li>
+          <li class="included">&#10003; 500 GB Storage</li>
+          <li class="included">&#10003; Advanced Analytics</li>
+          <li class="included">&#10003; 24/7 Support</li>
+          <li class="included">&#10003; Custom Domain</li>
+          <li class="included">&#10003; Team Collaboration</li>
+        </ul>
+        <button class="plan-btn enterprise-btn">Contact Sales</button>
+      </div>
+
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>

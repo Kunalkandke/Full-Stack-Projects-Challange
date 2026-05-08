@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather Card</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card" id="weatherCard">
+      <div class="card-top">
+        <div class="location-row">
+          <span class="location-icon">&#128205;</span>
+          <span class="location" id="location">New York, US</span>
+          <button class="refresh-btn" id="refreshBtn" title="Refresh">&#8635;</button>
+        </div>
+        <p class="date" id="dateTime"></p>
+      </div>
+
+      <div class="weather-main">
+        <div class="weather-icon" id="weatherIcon">&#9728;</div>
+        <div class="temp-block">
+          <span class="temperature" id="temperature">24</span>
+          <div class="unit-toggle">
+            <button class="unit-btn active" id="celsiusBtn">°C</button>
+            <button class="unit-btn" id="fahrenheitBtn">°F</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="condition" id="condition">Sunny & Clear</p>
+
+      <div class="details-grid">
+        <div class="detail">
+          <span class="detail-icon">&#128167;</span>
+          <span class="detail-value" id="humidity">62%</span>
+          <span class="detail-label">Humidity</span>
+        </div>
+        <div class="detail">
+          <span class="detail-icon">&#127788;</span>
+          <span class="detail-value" id="wind">14 km/h</span>
+          <span class="detail-label">Wind</span>
+        </div>
+        <div class="detail">
+          <span class="detail-icon">&#128065;</span>
+          <span class="detail-value" id="visibility">10 km</span>
+          <span class="detail-label">Visibility</span>
+        </div>
+        <div class="detail">
+          <span class="detail-icon">&#9729;</span>
+          <span class="detail-value" id="feelsLike">21°</span>
+          <span class="detail-label">Feels Like</span>
+        </div>
+      </div>
+
+      <div class="forecast">
+        <div class="forecast-item" data-day="Mon">
+          <span class="f-day">Mon</span>
+          <span class="f-icon">&#9728;</span>
+          <span class="f-temp">26°</span>
+        </div>
+        <div class="forecast-item" data-day="Tue">
+          <span class="f-day">Tue</span>
+          <span class="f-icon">&#9925;</span>
+          <span class="f-temp">19°</span>
+        </div>
+        <div class="forecast-item" data-day="Wed">
+          <span class="f-day">Wed</span>
+          <span class="f-icon">&#127783;</span>
+          <span class="f-temp">22°</span>
+        </div>
+        <div class="forecast-item" data-day="Thu">
+          <span class="f-day">Thu</span>
+          <span class="f-icon">&#9928;</span>
+          <span class="f-temp">17°</span>
+        </div>
+        <div class="forecast-item" data-day="Fri">
+          <span class="f-day">Fri</span>
+          <span class="f-icon">&#9728;</span>
+          <span class="f-temp">25°</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
